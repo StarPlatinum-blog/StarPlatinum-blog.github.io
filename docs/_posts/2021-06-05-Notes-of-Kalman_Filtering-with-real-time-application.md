@@ -15,8 +15,8 @@ categories: notes
 Matrix A, B
 
 if A - B is a **positive definite** matrix, then
-$$A \gt B$$
+\$$A \gt B\$$
 if A - B is a **non-negative definite** matrix, then
-$$A \ge B$$
+\$$A \ge B\$$
 Stop at **Lemma 1.1.**...
 
