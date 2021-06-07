@@ -39,13 +39,13 @@ prefix p　　# 进入上一个窗口
 prefix l　　进入之前操作的窗口
 prefix 0~9　　选择编号0~9对应的窗口
 prefix .　　修改当前窗口索引编号
-prefix '　　切换至指定编号（可大于9）的窗口
+prefix \'　　切换至指定编号（可大于9）的窗口
 prefix f　　根据显示的内容搜索窗格
 prefix &　　关闭当前窗口
 
 # 窗格管理
 prefix %　　水平方向创建窗格
-prefix "　　垂直方向创建窗格
+prefix \"　　垂直方向创建窗格
 prefix Up|Down|Left|Right　　根据箭头方向切换窗格
 prefix q　　显示窗格编号
 prefix o　　顺时针切换窗格
