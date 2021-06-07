@@ -2,6 +2,7 @@
 layout: post
 title:  'Kalman Filter'
 date:   2021-06-05 19:30:00 +0800
+mathjax: true
 categories: notes
 ---
 
