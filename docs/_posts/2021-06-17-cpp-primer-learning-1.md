@@ -39,11 +39,11 @@ int main() {
 
 返回300：
 
-![](../imgs/cpp_primer/chp1/return300.png)
+![]({{'/imgs/cpp_primer/chp1/return300.png' | prepend: site.baseurl}})
 
 返回-127：
 
-![](../imgs/cpp_primer/chp1/return-127.png)
+![]({{'/imgs/cpp_primer/chp1/return-127.png' | prepend: site.baseurl}})
 
 
 
@@ -95,7 +95,7 @@ int main() {
 
 输出：
 
-![](../imgs/cpp_primer/chp1/sum.png)
+![]({{'/imgs/cpp_primer/chp1/sum.png' | prepend: site.baseurl}})
 
 
 
