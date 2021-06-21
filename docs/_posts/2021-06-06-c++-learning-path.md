@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  'C++ Learning Path'
-date:   2021-06-05 19:30:00 +0800
+date:   2021-06-06 19:30:00 +0800
 categories: notes
 ---
 
