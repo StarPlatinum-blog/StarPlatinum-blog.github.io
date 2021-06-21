@@ -35,7 +35,7 @@ int main() {
 
 返回-1：
 
-![]({{'../imgs/cpp_primer/chp1/return_-1.png' | prepend: site.baseurl}})
+![]({{'/imgs/cpp_primer/chp1/return_-1.png' | prepend: site.baseurl}})
 
 返回300：
 
