@@ -64,3 +64,9 @@ tmux list-key　　列出所有绑定的键，等同于prefix ?
 tmux list-command　　列出所有命令
 ```
 
+### Tmux 美化
+
+[oh_my_tmux](https://github.com/gpakosz/.tmux)
+
+shell美化 [oh_my_zsh](https://ohmyz.sh/)
+

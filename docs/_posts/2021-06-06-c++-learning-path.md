@@ -126,3 +126,12 @@ public:
 
 
 - 虚析构函数的作用：为了避免内存泄漏，而且是当子类中会有指针成员变量时才会使用到。即虚析构函数使得在删除指向子类对象的基类指针时，可以调用子类的析构函数来实现释放子类中堆内存的目的，从而防止内存泄漏。
+
+什么是non-POD？ Firstly, 什么是POD？
+
+> A **POD type** is a C++ **type** that has an equivalent in C, and that uses the same rules as C uses for initialization, copying, layout, and addressing. ... To make sure the other rules match, the C++ version must not have virtual functions, base classes, non-static members that are private or protected , or a destructor.
+
+POD(Plain Old Data)是在C++中有着和在C相同作用的类型，POD有着和在C中一样的运行方式，比如初始化、拷贝、内存布局、寻址方式……为了保证此类型的所有的其他运行方式都一样，在C++不能对这些类型添加虚函数、基类、私有或保护的非静态成员以及析构函数。
+
+>A POD (plain old data) object has one of these data types--a fundamental type, pointer, union, struct, array, or class--with no constructor, destructor and virtual function. Conversely, a non-POD object **is one for which a constructor exists**.
+
