@@ -5,9 +5,7 @@ date:   2021-06-11 17:33:00 +0800
 categories: notes
 ---
 
-## 设计模式
-
-应对变化，提高复用
+使用设计模式的目标：应对变化，提高复用（二进制级别的复用）
 
 
 
@@ -26,13 +24,13 @@ categories: notes
 1. 类模式处理类与子类的静态关系；
 2. 对象模式处理对象间的动态关系。
 
-#### 李的分类：
+#### 李建忠老师的分类：
 
 从封装变化角度对模式分类
 
 1. 组件协作：
-   - Template Method
-   - Strategy
+   - [Template Method](#TemplateMethod)
+   - [Strategy](#Strategy)
    - Observer/Event
 2. 单一职责：
    - Decorator
@@ -130,6 +128,11 @@ categories: notes
 
 1. 使用封装来创建对象之间的分界层，让设计者可以在分界层的一侧进行修改，而不会对另一侧产生不良的影响，从而实现层次间的松耦合。
 
+两类不应做的假设：
+
+1. 所有的部分都是变化的：则任何设计模式都无效；
+2. 所有的部分都是稳定的：则不需要实现任何设计模式。
+
 总结：封装更高层次的理解是封装变化点，一侧变化一侧稳定。
 
 #### 原则 8：针对接口编程，而不是针对实现编程
@@ -150,18 +153,15 @@ categories: notes
 
 
 
+<a name="TemplateMethod"></a>
+
 ---
 
 ### 模式 1： Template Method
 
-`Intention` 存在一个稳定的算法骨架、步骤，在这个骨架中部分子程序是不稳定的，则此时可以使用Template Method。
+`Intention` 存在一个稳定的算法骨架、步骤，在这个骨架中的部分子程序是不稳定的，则此时可以使用Template Method。
 
 `Definition` 在基类中定义一个算法的骨架，将一些步骤延迟到子类中，使得子类可以不改变算法的结构即可重定义该算法的某些特定步骤。
-
-两类不应做的假设：
-
-1. 所有的部分都是变化的：则任何设计模式都无效；
-2. 所有的部分都是稳定的：则不需要实现任何设计模式。
 
 `Hint` 延迟到子类：基类定义虚函数让子类去实现。
 
@@ -177,4 +177,26 @@ categories: notes
 4. 被Template Method调用的方法可以有实现，也可以没有任何实现（抽象方法、纯虚函数），推荐将其设置为protected方法。
 
 `practice` [01 Template Method](https://github.com/CaptainXX/Design_Patterns/tree/main/01_template_method)
+
+ 
+
+<a name="Strategy"></a>
+
+---
+
+### 模式 2：Strategy
+
+`Intention` 存在一系列可能需要扩展或者修改的算法，在某个固定的位置根据不同情况调用不同方法，则可以使用Strategy来解耦这些算法。
+
+`Definition` 定义一系列算法，把它们一个个封装起来，并且使它们可以互相替换。本模式使得算法可独立于使用它的客户而变化。
+
+`Hint` 需要用Strategy的代码特征：有大量的`if else`出现，“if else 散弹”。 
+
+`Hint` 当存在绝对稳定不变的情况时，不应该用Strategy，而是应该用`if else`，例如一周七天每天做什么事。
+
+总结：
+
+1. Strategy及其子类为组件提供了一系列**可重用的算法**，从而可以使得类型在运行时方便地根据需要在各个算法之间进行切换；
+2. Strategy模式提供了用条件判断语句以外的**另一种选择**，消除条件判断语句，就是在解耦合。含有许多条件判断语句的代码通常都需要Strategy模式；
+3. 如果Strategy没有实例变量，那么各个上下文可以**共享同一个Strategy对象**，从而节省对象开销。（Singleton）
 
