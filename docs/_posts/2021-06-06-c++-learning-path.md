@@ -137,3 +137,15 @@ POD(Plain Old Data)是在C++中有着和在C相同作用的类型，POD有着和
 
 >A POD (plain old data) object has one of these data types--a fundamental type, pointer, union, struct, array, or class--with no constructor, destructor and virtual function. Conversely, a non-POD object **is one for which a constructor exists**.
 
+
+
+## CPP Errors
+
+1. c++ class does not name a type，可能原因：
+   1. 未包含引用的类命名空间；
+   2. 未包含引用的类头文件；
+   3. 类名写错；
+   4. 循环引用头文件。
+2. passing ‘const xxx’ as ‘this’ argument discards qualifiers，可能原因：
+   1. 使用`const`对象或对象指针调用了类的非`const`方法
+
