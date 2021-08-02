@@ -176,7 +176,7 @@ categories: notes
 3. 反向控制结构。（库来调用子类）
 4. 被Template Method调用的方法可以有实现，也可以没有任何实现（抽象方法、纯虚函数），推荐将其设置为protected方法。
 
-`practice` [01 Template Method](https://github.com/CaptainXX/Design_Patterns/tree/main/01_template_method)
+`Practice` [01 Template Method](https://github.com/CaptainXX/Design_Patterns/tree/main/01_template_method)
 
  
 
@@ -199,4 +199,8 @@ categories: notes
 1. Strategy及其子类为组件提供了一系列**可重用的算法**，从而可以使得类型在运行时方便地根据需要在各个算法之间进行切换；
 2. Strategy模式提供了用条件判断语句以外的**另一种选择**，消除条件判断语句，就是在解耦合。含有许多条件判断语句的代码通常都需要Strategy模式；
 3. 如果Strategy没有实例变量，那么各个上下文可以**共享同一个Strategy对象**，从而节省对象开销。（Singleton）
+
+`Practice` [02 Strategy](https://github.com/CaptainXX/Design_Patterns/tree/main/02_Strategy/02_Strategy)
+
+
 
