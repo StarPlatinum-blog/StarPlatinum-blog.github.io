@@ -31,9 +31,9 @@ categories: notes
 1. 组件协作：
    - [Template Method](#TemplateMethod)
    - [Strategy](#Strategy)
-   - Observer/Event
+   - [Observer/Event](#observer)
 2. 单一职责：
-   - Decorator
+   - [Decorator](#Decorator)
    - Bridge
 3. 对象创建：
    - Factory Method
@@ -60,6 +60,10 @@ categories: notes
    - Visitor
 9. 领域问题：
    - Interpreter
+
+
+
+[UML关系类型](#UML)
 
 
 
@@ -169,7 +173,7 @@ categories: notes
 
 `Hint` C++中稳定的部分应该写成非虚函数，支持变化的部分应该写成虚函数。
 
-总结：
+`Conclusion`
 
 1. 非常基础性的设计模式。在面向对象系统中有大量应用。
 2. 机制非常简洁（虚函数的多态），为应用程序框架提供了灵活的扩展点，是代码复用方面的基本。
@@ -194,7 +198,7 @@ categories: notes
 
 `Hint` 当存在绝对稳定不变的情况时，不应该用Strategy，而是应该用`if else`，例如一周七天每天做什么事。
 
-总结：
+`Conclusion`
 
 1. Strategy及其子类为组件提供了一系列**可重用的算法**，从而可以使得类型在运行时方便地根据需要在各个算法之间进行切换；
 2. Strategy模式提供了用条件判断语句以外的**另一种选择**，消除条件判断语句，就是在解耦合。含有许多条件判断语句的代码通常都需要Strategy模式；
@@ -204,3 +208,132 @@ categories: notes
 
 
 
+<a name="observer"></a>
+
+---
+
+### 模式 3：Observer/Event
+
+`Intention` 定义对象间一对多的关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。
+
+`Definition` 当多个对象之间存在通知依赖关系时，即可使用Observer模式实现他们之间的松耦合。
+
+`Hint` 通知依赖关系：一个对象（目标）的状态发生改变，所有的依赖对象（观察者）都能得到通知。
+
+`Hint` 进度条可以使用Observer模式实现。
+
+`Hint` C++一般不推荐使用多继承，会造成耦合的问题；但是推荐一种多继承的方法，就是只有一个是父类，其他的都是接口。
+
+`Conclusion`
+
+1. 使用面向对象的抽象，Observer模式使得我们可以独立地改变目标与观察者，从而使二者之间的依赖关系达到松耦合；
+2. 目标发送通知时，无需指定观察者，通知（可以携带通知信息作为参数）会自动传播；
+3. 观察者自己决定是否需要订阅通知，目标对象对此一无所知；
+4. Observer模式是基于事件的UI框架中非常常用的设计模式，也是MVC模式的一个重要组成部分。
+
+`Practice` [03 Observer](https://github.com/CaptainXX/Design_Patterns/tree/main/03_Obsever/03_Obsever)
+
+
+
+<a name="Decorator"></a>
+
+---
+
+### 模式 4：Decorator
+
+
+
+`Hint` 组合优于继承；
+
+`Hint` 当需要的子类指针都是同一父类的子类时，则可以将其指针声明为父类指针，可以有效增加复用；
+
+`Hint` 当子类中都有相同成员时，应当把它往上提，上提有两种方法：1. 提到基类中，2. 新增中间类Decorator；
+
+
+
+`Hint` 用组合的方式引出多态的使用；
+
+`Hint` Decorator继承父类是为了维护接口的规范，组合父类是为了实现子类的运行时多态。
+
+
+
+<a name="UML"></a>
+
+---
+
+### UML类图的6种关系类型
+
+#### 1. Dependency (依赖)
+
+```mermaid
+graph LR
+	A[Class A]
+	B[Class B]
+	
+	A -.-> B
+```
+
+`Definition` 类A依赖类B，在代码中表现为在类A中临时使用了类B，这种关系具有偶然性、临时性，但类B的变化会对A造成影响，所以称之为依赖关系。
+
+`Behavior` 
+
+1. 类B是类A成员函数的形参；
+2. 类A中存在类B的局部变量；
+3. 类A通过静态成员使用类B；
+
+
+
+#### 2. Association (关联)
+
+```mermaid
+graph LR
+	A[Class A]
+	B[Class B]
+	A --> B
+```
+
+`Definition` 类A关联类B，对于两个相对独立的对象，当一个对象的实例与另一个对象的一些特定实例存在固定的对应关系时，这两个对象之间为关联关系。
+
+`Behavior` 
+
+1. 类A中有类B的成员变量；
+
+
+
+#### 3. Aggregation (聚合)
+
+`Definition` 类A聚合于类B，表示类A和类B是一种关联关系，同时类A是类B的一部分，语义上和关联相同，体现了整体与部分的关系。但类A和类B是可以分别独立存在的。
+
+`Behavior`
+
+1. 类B中有类A的成员变量，类A是类B的一部分，一般在类A中存在set方法用于设置类B的对象；
+
+
+
+#### 4. Composition (组合)
+
+`Definition` 类A由类B组合而成，表示类A和类B的强关联关系，类B是类A的一部分，同样体现了整体与部分的关系，但类A和类B生命周期相同，不能独立存在。
+
+`Behavior`
+
+1. 类A中有类B的成员变量，类A和类B不可分离；
+
+
+
+#### 5. Generalization (继承)
+
+`Definition` 类A继承类B的功能和成员，并可以增加自己新功能的能力，效果同C++中的继承。
+
+`Behavior`
+
+1. 类A : public 类B；
+
+
+
+#### 6. Implementation (实现)
+
+`Definition` 类A实现类B的接口。
+
+`Behavior` 
+
+1. 类B是含有纯虚函数的抽象类，类A继承类B后实现虚函数；
