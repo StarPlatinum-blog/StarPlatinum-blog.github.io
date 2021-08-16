@@ -149,3 +149,14 @@ POD(Plain Old Data)是在C++中有着和在C相同作用的类型，POD有着和
 2. passing ‘const xxx’ as ‘this’ argument discards qualifiers，可能原因：
    1. 使用`const`对象或对象指针调用了类的非`const`方法
 
+3. 一个很奇怪的BUG，记录一下：
+
+   1. 声明基类A，用`#ifndef #define #endif`进行保护；
+   2. 声明子类B，同样用`#define`保护，`#include`基类A，并继承A；
+   3. 声明子类C，同B；
+   4. 建立`main.cpp`函数，`#include`子类B，C，则只有先包含进来的头文件中的类有效。
+
+   解决方法，全部头文件使用`#pragma once`进行限定，应该是编译器预处理文件展开的问题，之后有空了再研究。
+
+   
+

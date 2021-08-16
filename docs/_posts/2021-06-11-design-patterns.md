@@ -34,7 +34,7 @@ categories: notes
    - [Observer/Event](#observer)
 2. 单一职责：
    - [Decorator](#Decorator)
-   - Bridge
+   - [Bridge](#Bridge)
 3. 对象创建：
    - Factory Method
    - Abstract Factory
@@ -241,19 +241,49 @@ categories: notes
 
 ### 模式 4：Decorator
 
+`Intention` 动态地给一个对象增加一些额外的职责，相比生成子类来说更加灵活。
 
+`Definition` 想要给一个基类增加额外职责时，如果这些职责是可以互相依赖的（m个子类和n个子类相互依赖），则可以将其中的m个子类通过聚合父类指针的方式，与其他n个子类形成依赖（传入子类指针）。将这些子类的指针到一个介于父类和子类之间的类，同时继承父类，以保持接口一致，这个中间的类就是Decorator。
 
-`Hint` 组合优于继承；
+`Hint` 组合(m+n)优于继承(m*n)；
 
 `Hint` 当需要的子类指针都是同一父类的子类时，则可以将其指针声明为父类指针，可以有效增加复用；
 
 `Hint` 当子类中都有相同成员时，应当把它往上提，上提有两种方法：1. 提到基类中，2. 新增中间类Decorator；
 
-
-
 `Hint` 用组合的方式引出多态的使用；
 
 `Hint` Decorator继承父类是为了维护接口的规范，组合父类是为了实现子类的运行时多态。
+
+`Conclusion` 
+
+1. 通过采用组合而非继承的手法，Decorator模式实现了运行时动态扩展对象功能的能力，而且可以根据需要扩展多个功能。避免了使用继承带来的“灵活性差”和“多子类衍生问题”。
+2. Decorator类在接口上表现为is-a Component的继承关系，即Decorator类继承了Component类所具有的接口。但在实现上又表现为has-a Component的组合关系，即Decorator类又使用了另外一个Component类。
+3. Decorator模式的目的并非解决“多子类衍生的多继承”问题，Decorator模式应用的要点在于解决“主体类在多个方向上的扩展功能”——是为“装饰”的含义。
+
+`Usage` 
+
+1. 在不影响其他对象的情况下，以动态、透明的方式给单个对象添加职责；
+2. 处理那些可以撤销的职责；
+3. 当不能采用生成子类的方法进行扩充的一种可能的情况是：有大量的扩展（上文的m很大），为支持每一种组合将产生大量的子类（给n个子类每个都扩展出m个子类，则一共需要实现m*n个子类）。
+
+`Practice` [04 Decorator](https://github.com/CaptainXX/Design_Patterns/tree/main/04_Decorator/04_Decorator)
+
+
+
+<a name="Bridge"></a>
+
+---
+
+### 模式 5：Bridge
+
+`Intention` 由于某些类型的固有实现逻辑，使得他们具有两个或多个变化的纬度。
+
+`Hint` C++中多用单继承+组合的模式，少用多继承，多继承破坏了单一职责原则。
+
+
+
+`Conclusion`
 
 
 
