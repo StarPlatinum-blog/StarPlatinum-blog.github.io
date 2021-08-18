@@ -36,7 +36,7 @@ categories: notes
    - [Decorator](#Decorator)
    - [Bridge](#Bridge)
 3. 对象创建：
-   - Factory Method
+   - [Factory Method](#factory)
    - Abstract Factory
    - Prototype
    - Builder
@@ -279,11 +279,41 @@ categories: notes
 
 `Intention` 由于某些类型的固有实现逻辑，使得他们具有两个或多个变化的纬度。
 
+`Definition` 将一个类的抽象部分和它的实现部分分离，使它们可以独立地变化。
+
 `Hint` C++中多用单继承+组合的模式，少用多继承，多继承破坏了单一职责原则。
 
-
-
 `Conclusion`
+
+1. Bridge模式使用“对象间的组合关系”解耦了抽象和实现之间固有的绑定关系，使得抽象和实现可以沿着各自的纬度来变化，即“子类化”它们。
+2. Bridge模式有时候类似于多继承方案，但是多继承方案违背单一职责原则，复用性较差。Bridge模式是比多继承方案更好的解决方法。
+3. Bridge模式的应用一般是在“两个非常强的变化纬度”，有时一个类也有多于两个的变化纬度，这时可以使用Bridge的扩展模式。
+
+`Usage`
+
+1. 不希望在抽象和它的实现之间有一个固定的绑定关系。比如希望在运行时选择或者切换程序的实现。
+2. 类的抽象和它的实现都应该可以通过生成子类的方法加以扩充。这时Bridge模式使你可以对不同的抽象接口和实现部分进行组合，并分别对它们进行扩充。
+3. 对一个抽象的实现部分的修改应对客户不产生影响，即客户的代码不必重新编译。
+4. （C++）你想对客户完全隐藏抽象的实现部分。在C++中，类的表示在类接口中是可见的。
+5. 想在多个对象间共享实现（比如引用计数），但同时要求客户并不知道这一点。
+
+`Practice` [05_Bridge](https://github.com/CaptainXX/Design_Patterns/tree/main/05_Bridge/05_Bridge)
+
+
+
+<a name="factory"></a>
+
+---
+
+### 模式 6：Factory Method
+
+`Definition` 定义一个用于创建对象的接口，让子类决定实例化哪一个类。Factory Method使得一个类的实例化延迟（目的：解耦，手段：虚函数）到子类。
+
+`Hint` 在前面的设计模式代码中，我们new一个类的对象时，违背了依赖倒置原则，依赖于类的实现而不是依赖于接口。
+
+`Hint`  `PStream* buffered_file_s = new PStreamBuffered(file_s);`
+
+`Hint` 等号左侧是一个基类指针，这是依赖接口，但等号右边是一个具体的类，这是依赖实现，需要把等号右边也变成依赖于接口。
 
 
 
