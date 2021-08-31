@@ -223,6 +223,25 @@ auto fn = bind(&Base::test, std::ref(b_ptr));
 4. 在子类中都实现了基类的纯虚函数，且子类基类都实现了虚函数，出现undefined reference to `vtable for [ClassName]'
 
    1. 可能是因为连接时没有将`.cpp`文件编译生成的`.o`文件链接进来，如果使用`QtCreator`，可以尝试重新保存一下`CMakeLists.txt`，让`IDE`刷新`Cmake`选项。
+   
+5. invalid new-expression of [abstract class type]
+
+   1. 这条报错的意思是new了一个抽象类，可能造成这条报错的原因有：
+
+      1. 子类内未实现抽象父类的纯虚函数，然后对子类使用new操作符就会产生这种问题。
+
+      2. 使用C++14，make_unique\<Parent\>(new Child)，当Parent是一个抽象基类时，也会导致此问题的出现。查看make_unique源码发现原因是因为make_unique会对父类使用new操作符。
+
+         ```c++
+           /// std::make_unique for single objects
+           template<typename _Tp, typename... _Args>
+             inline typename _MakeUniq<_Tp>::__single_object
+             make_unique(_Args&&... __args)
+             { return unique_ptr<_Tp>(new _Tp(std::forward<_Args>(__args)...)); }
+         
+         ```
+
+         
 
 
 

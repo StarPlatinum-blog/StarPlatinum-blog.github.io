@@ -37,7 +37,7 @@ categories: notes
    - [Bridge](#Bridge)
 3. 对象创建：
    - [Factory Method](#factory)
-   - Abstract Factory
+   - [Abstract Factory](#abstract_factory)
    - Prototype
    - Builder
 4. 对象性能：
@@ -314,6 +314,42 @@ categories: notes
 `Hint`  `PStream* buffered_file_s = new PStreamBuffered(file_s);`
 
 `Hint` 等号左侧是一个基类指针，这是依赖接口，但等号右边是一个具体的类，这是依赖实现，需要把等号右边也变成依赖于接口。
+
+`Conclusion`
+
+1. Factory Method模式用于隔离类对象的使用者和具体类想之间的耦合关系、面对一个经常变化的具体类型，紧耦合关系（new）会导致软件的脆弱；
+2. Factory Method模式通过面向对象的手法，将所要创建的具体对象工作延迟到子类，从而实现一种扩展（而非更改）的策略，较好地解决了这种紧耦合关系；
+3. Factory Method模式解决“单个对象”的需求变化。缺点在于要求创建方法/参数相同。
+
+`Practice` [06 Factory Method](https://github.com/CaptainXX/Design_Patterns/tree/main/06_Factory_Method/06_Factory_Method)
+
+
+
+<a name="abstract_factory"></a>
+
+---
+
+### 模式 7：Abstract Factory
+
+`Intention` 为了解决一系列相互依赖的对象的创建工作。绕过常规的new方法。
+
+`Definition` 提供一个接口，让该接口负责创建一系列“相关或者相互依赖的对象”，无需指定他们具体的类。
+
+`Hint` 实际上就是把工厂方法需要多种工厂创建的多个相互依赖的对象的创建函数都合并到同一个工厂类中。
+
+`Hint` 能够创建多个对象的工厂就是抽象工厂，而只创建一种对象的抽象工厂即工厂方法。
+
+`Hint` 高内聚：有相关性的就放在一起。
+
+`Hint` 每个模式稳定的部分就是它的缺点。但是如果在实际工程中没有变化，可以认为它是稳定的。由此选择正确的模式。
+
+`Hint` 抽象工厂与工厂模式有相同的缺点，同样在于要求创建方法/参数相同。
+
+`Conclusion` 
+
+1. 如果没有应对“多系列对象构建”的需求变化，则没有必要使用Abstract Factory模式，这时候使用简单工厂完全可以；
+2. “系列对象”指的是在某一特定系列下对象之间有相互依赖或作用的关系。不同系列的对象之间不能相互依赖；
+3. Abstract Factory模式主要在于应对新系列的需求变动。其缺点在于难以应对“新对象”的需求变动。
 
 
 
