@@ -19,11 +19,11 @@ categories: notes
 4. 上面都是N卡+Intel集显的常见问题，下面就是MSI的特殊问题了
 5. 安装好系统之后，重启，发现直接进入了Win10，这并不是grub被覆盖的原因，而是微星的BIOS的设置问题。重启，按del，进入BIOS，在启动顺序的下方，选择下图白色高亮的项目
 
-![](/images/dousys/BIOS1.jpg)
+![]({{ site.url }}/imgs/dousys/BIOS1.jpg)
 
 进入之后就可以调整顺序了，使用Ubuntu引导，再重启就可以看到grub了。
 
-![](/images/dousys/BIOS2.jpg)
+![]({{ site.url }}/imgs/dousys/BIOS2.jpg)
 
 6. 然而进入系统之后，99%的情况下会在初始界面卡死，这就是Nvidia驱动的问题了，卸载自带开源驱动然后自己重新安装驱动。
 7. 进入文字模式，关闭gdm，在联网的情况下`sudo ubuntu-drivers autoinstall`，安装完毕重启，问题就解决了
