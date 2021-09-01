@@ -5,6 +5,8 @@ date:   2021-06-11 17:33:00 +0800
 categories: notes
 ---
 
+<a name="Top"></a>
+
 使用设计模式的目标：应对变化，提高复用（二进制级别的复用）
 
 
@@ -36,9 +38,9 @@ categories: notes
    - [Decorator](#Decorator)
    - [Bridge](#Bridge)
 3. 对象创建：
-   - [Factory Method](#factory)
-   - [Abstract Factory](#abstract_factory)
-   - Prototype
+   - [Factory Method](#Factory)
+   - [Abstract Factory](#AbstractFactory)
+   - [Prototype](#Prototype)
    - Builder
 4. 对象性能：
    - Singleton
@@ -301,7 +303,7 @@ categories: notes
 
 
 
-<a name="factory"></a>
+<a name="Factory"></a>
 
 ---
 
@@ -325,7 +327,7 @@ categories: notes
 
 
 
-<a name="abstract_factory"></a>
+<a name="AbstractFactory"></a>
 
 ---
 
@@ -343,13 +345,51 @@ categories: notes
 
 `Hint` 每个模式稳定的部分就是它的缺点。但是如果在实际工程中没有变化，可以认为它是稳定的。由此选择正确的模式。
 
-`Hint` 抽象工厂与工厂模式有相同的缺点，同样在于要求创建方法/参数相同。
+`Hint` 抽象工厂与工厂方法有相同的缺点，同样在于要求创建方法/参数相同。
+
+`Hint` 工厂方法和抽象工厂一般并称为工厂模式。
 
 `Conclusion` 
 
 1. 如果没有应对“多系列对象构建”的需求变化，则没有必要使用Abstract Factory模式，这时候使用简单工厂完全可以；
 2. “系列对象”指的是在某一特定系列下对象之间有相互依赖或作用的关系。不同系列的对象之间不能相互依赖；
 3. Abstract Factory模式主要在于应对新系列的需求变动。其缺点在于难以应对“新对象”的需求变动。
+
+
+
+<a name="Prototype"></a>
+
+---
+
+### 模式 8：Prototype
+
+`Intention` 面对某些复杂对象的构建。 
+
+`Hint` 相对工厂模式使用较少。
+
+`Hint` 通过克隆原型来创建对象，深拷贝（拷贝构造函数需要写正确）。
+
+`Hint` 初始对象（较为复杂）的状态不适合直接使用，则可以使用原型，克隆出原型的状态，而不是工厂模式。
+
+`Conclusion` 
+
+1. 用于隔离类对象的使用者和具体类型之间的耦合关系，它同样要求这些易变类有“稳定的接口”。
+2. 对于如何创建易变类的实体对象，采用原型克隆的方法来做。它使得我们可以非常灵活地动态创建拥有某些稳定接口的新对象。所需工作仅仅是注册一个新类的对象（即原型），然后在任何需要的地方Clone。
+3. Clone方法可以利用某些框架中的序列化来实现深拷贝。
+
+
+
+---
+
+### 模式 9：Builder
+
+`Intention` 面临复杂对象的构建。
+
+`Definition` 将一个复杂对象的构建与表示相分离，使得同样的构建过程（稳定）可以创建不同的表示（变化）。
+
+`Hint` C++ 中在构造函数里调用虚函数会导致静态绑定，而不是动态绑定。子类构造函数必须先调用父类的构造函数，所以如果在父类调用虚函数，子类的构造函数还未运行结束，则不会调用子类重写的虚函数。
+
+`Hint` 类复杂就拆开，类简单就合并。
 
 
 
@@ -433,3 +473,9 @@ graph LR
 `Behavior` 
 
 1. 类B是含有纯虚函数的抽象类，类A继承类B后实现虚函数；
+
+
+
+---
+
+[Return to Top](#Top)
