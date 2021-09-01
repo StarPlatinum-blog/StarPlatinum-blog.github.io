@@ -1,6 +1,6 @@
 ---
 layout:	post
-title:	KaliTools-nmap
+title:	KaliTools-SQLmap
 date:   2018-04-10 13:00:12 +0800
 categories: Kali
 ---

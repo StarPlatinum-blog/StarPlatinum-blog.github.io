@@ -1,7 +1,7 @@
 ---
 layout:	post
 title:	雕虫小技
-date	2018-06-06 13:00:12 +0800
+date:	2018-06-06 13:00:12 +0800
 categories: Kali
 ---
 
