@@ -41,9 +41,9 @@ categories: notes
    - [Factory Method](#Factory)
    - [Abstract Factory](#AbstractFactory)
    - [Prototype](#Prototype)
-   - Builder
+   - [Builder](#Builder)
 4. 对象性能：
-   - Singleton
+   - [Singleton](#Singleton)
    - Flyweight
 5. 接口隔离：
    - Facade
@@ -323,6 +323,12 @@ categories: notes
 2. Factory Method模式通过面向对象的手法，将所要创建的具体对象工作延迟到子类，从而实现一种扩展（而非更改）的策略，较好地解决了这种紧耦合关系；
 3. Factory Method模式解决“单个对象”的需求变化。缺点在于要求创建方法/参数相同。
 
+`Usage`
+
+1. yigexitong 
+
+
+
 `Practice` [06 Factory Method](https://github.com/CaptainXX/Design_Patterns/tree/main/06_Factory_Method/06_Factory_Method)
 
 
@@ -355,6 +361,15 @@ categories: notes
 2. “系列对象”指的是在某一特定系列下对象之间有相互依赖或作用的关系。不同系列的对象之间不能相互依赖；
 3. Abstract Factory模式主要在于应对新系列的需求变动。其缺点在于难以应对“新对象”的需求变动。
 
+`Usage`
+
+1. 一个系统要独立于它的产品的创建、组合和表示；
+2. 一个系统要由多个产品系列中的一个来配置；
+3. 要强调一系列相关的产品对象的设计以便进行联合使用；
+4. 提供一个产品类库，但只想显示它们的接口而不是实现。
+
+`Practice` [07 Abstract Factory](https://github.com/CaptainXX/Design_Patterns/tree/main/07_Abstract_Factory/07_Abstract_Factory)
+
 
 
 <a name="Prototype"></a>
@@ -377,7 +392,18 @@ categories: notes
 2. 对于如何创建易变类的实体对象，采用原型克隆的方法来做。它使得我们可以非常灵活地动态创建拥有某些稳定接口的新对象。所需工作仅仅是注册一个新类的对象（即原型），然后在任何需要的地方Clone。
 3. Clone方法可以利用某些框架中的序列化来实现深拷贝。
 
+`Usage`
 
+1. 当一个系统应该独立于它的产品创建、构成和表示时；
+2. 当要实例化的类是在运行时指定时，例如通过动态装载；
+3. 为了避免创建一个与产品类层次平行的工厂类层次时。
+4. 当一个类的实例只能有几个不同状态组合中的一种时。建立相应数目的原型并克隆它们可能比每次用合适的状态手工实例化该类更方便一些。
+
+`Practice` [08 Prototype](https://github.com/CaptainXX/Design_Patterns/tree/main/08_Prototype/08_Prototype)
+
+
+
+<a name="Builder"></a>
 
 ---
 
@@ -390,6 +416,106 @@ categories: notes
 `Hint` C++ 中在构造函数里调用虚函数会导致静态绑定，而不是动态绑定。子类构造函数必须先调用父类的构造函数，所以如果在父类调用虚函数，子类的构造函数还未运行结束，则不会调用子类重写的虚函数。
 
 `Hint` 类复杂就拆开，类简单就合并。
+
+`Practice` [09 Builder](https://github.com/CaptainXX/Design_Patterns/tree/main/09_Builder/09_Builder)
+
+
+
+<a name="Singleton"></a>
+
+---
+
+### 模式 10：Singleton
+
+`Intention` 有些特殊的类，必须保证它们在系统中只存在一个实例，才能保证它的逻辑正确性以及良好的效率。
+
+`Hint` 面向对象很好地解决了抽象的问题，但是必不可免地要付出一定代价。对于通常
+
+`Hint` 继承带来的内存代价很少，可以忽略，但虚函数带来的开销有倍乘效应。在有些情况下，这些开销需要谨慎处理。
+
+`Hint` 需要把构造函数和拷贝构造函数都设置成private。然后设置一个静态变量和一个静态成员函数，二者都是以Singleton类作为类型。成员函数用于返回这个成员变量，也就是我们创建的单例。
+
+```c++ 
+class Singleton {
+private:
+    Singleton(){};
+    Singleton(Singleton& sglton){};
+
+public:
+    
+
+};
+```
+
+
+
+`Hint` 线程不安全版本，多线程情况下，单例的创建可能被执行多次。
+
+```c++
+Singleton* Singleton::GetInstance() {
+    if (! m_instance_) {
+        m_instance_ = new Singleton();
+    }
+    return m_instance_;
+}
+```
+
+`Hint` 线程安全版本1，加锁，但代价过高，读是不需要加锁的，在高并发中会导致延迟。
+
+```c++ 
+Singleton* Singleton::GetInstance() {
+    Lock lock;
+    if (! m_instance_) {
+        m_instance_ = new Singleton();
+    }
+    return m_instance_;
+}
+```
+
+`Hint` 改进版本，双检查锁，但会因为内存读写reorder不安全。可能的情况是：一般的`new`顺序是1. 分配内存 2. 调用类的构造函数 3. 把内存地址返回，但在内存reorder之后，这个顺序在CPU指令层就变成1. 分配内存 2. 返回内存地址给单例 3. 调用构造器。如果一个线程第一次进入`m_instance_`，执行到new 内存reorder的第二步，还没有调用类的构造器，这时`m_instance_`就已经有值了。如果此时另一个线程抢占到了时间片，进入`GetInstance`函数执行，就会发现`! m_instance_`的结果是`false`，直接返回`m_instance_`的地址，而此时得到的对象是一个还没有调用构造函数的对象，这就会导致对象是错误的，后续代码就会发生错误。
+
+```C++
+Singleton* Singleton::GetInstance() {
+    if (! m_instance_) {
+        Lock lock;
+        if (! m_instance_)
+        	m_instance_ = new Singleton();
+    }
+    return m_instance_;
+}
+```
+
+为了解决上面的问题，JAVA增加了`valatile`关键字，来告诉编译器此处的代码不进行内存reorder优化。
+
+`Hint` C++11的实现
+
+```c++
+std::atomic<Singleton*> Singleton::m_instance_;
+std::mutex Singleton::m_mutex;
+
+Singleton* Singleton::GetInstance() {
+    Singleton* tmp = m_instance_.load(std::memory_order_relaxed);
+    std::atomic_thread_fence(std::memory_order_acquire)；
+    if (! tmp) {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        tmp = m_instance_.load(std::memory_order_relaxed);
+        if (! tmp) {
+            tmp = new Singleton;
+            std::atomic_thread_fence(std::memory_order_release);
+            m_instance_.store(tmp, std::memory_order_relaxed);
+        }
+    }
+    return tmp;
+}
+```
+
+`Conclusion`
+
+1. Singleton模式中的实例构造器可以设置为protected以允许子类派生；
+2. Singleton模式一般不要支持拷贝构造函数和Clone接口，因为有可能导致多个对象实例，与`Singleton`的初衷违背。
+3. 如何实现多线程环境下安全的Singleton。
+
+`Practice` [10 Singleton](https://github.com/CaptainXX/Design_Patterns/tree/main/10_Singleton/10_Singleton)
 
 
 
