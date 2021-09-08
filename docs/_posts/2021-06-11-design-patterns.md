@@ -46,10 +46,10 @@ categories: notes
    - [Singleton](#Singleton)
    - [Flyweight](#Flyweight)
 5. 接口隔离：
-   - Facade
-   - Proxy
+   - [Facade](#Facade)
+   - [Proxy](#Proxy)
    - Mediator
-   - Adapter
+   - [Adapter](#Adapter)
 6. 状态变化：
    - Memento
    - State
@@ -570,6 +570,52 @@ Singleton* Singleton::GetInstance() {
 3. Facade并非一个集装箱，可以任意地放进任何多个对象。Facade模式中的组件的内部应该是“相互耦合关系比较大的一系列组件”，而不是一个简单的功能集合。
 
 
+
+<a name="Proxy"></a>
+
+---
+
+### 模式 13：Proxy
+
+`Intention` 在面向对象系统中，有些对象由于某种原因（对象创建的开销很大、某些操作需要安全控制、需要进程外的访问），直接访问会给使用者或者系统结构带来很多麻烦。但又想要比较透明的对象访问（直接生成类的实例）。
+
+`Definition` 为其他对象提供一种代理，以控制（隔离，使用接口）对这个对象的访问。
+
+`Hint` 看起来简单，但通常需要很多层面的配合。实现的差异度非常大。
+
+`Hint` 分布式系统中大量使用代理。
+
+`Hint` [LCM](https://github.com/lcm-proj/lcm)实现了代理模式，通过`lcm-gen`可以产生传输需要的类。
+
+`Conclusion`
+
+1. “增加一层间接层”是软件系统中对许多复杂问题的一种常见解决方法。在面向对象系统中，直接使用某些对象会带来很多问题，作为间接层的Proxy对象便是解决这一问题的常用手段。
+2. 具体Proxy设计模式的实现方法、实现粒度都相差很大，有些可能对单个对象做细粒度的控制，如`copy-on-write`技术，有些可能对组件模块提供抽象代理层，在架构层次对对象做Proxy。
+3. Proxy并不一定要求保持接口完整的一致性，只要能够实现间接控制，有时候损及一些透明性是可以接收的。
+
+
+
+<a name="Adapter"></a>
+
+---
+
+### 模式 14：Adapter
+
+`Intention` 在软件系统中，由于应用环境的变化，常常需要将“一些现存的对象”放在新的环境中应用，但是新环境要求的接口是这些现存对象所不满足的。
+
+`Definition` 将一个类的接口转换成客户希望的另一个接口。Adapter模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。
+
+`Hint` STL里的`stack`和`queue`，是`dequeue`通过adapter实现的，虽然没有使用GOF 23中示例的指针方式，但是是通过对象实例进行聚合，通过旧的接口实现新的接口，同样是Adapter模式的思想。
+
+`Hint` 不能从实现的角度理解设计模式，要掌握设计原则。
+
+`Conclusion`
+
+1. Adapter模式主要应用于“希望复用一些现存的类，但是接口又与复用环境要求不一致的情况”，在遗留代码复用、类库迁移等方面非常有用；
+2. GOF 23定义了两种Adapter模式的实现结构：对象适配器和类适配器。但类适配器采用多继承的实现方式，一般不推荐使用。对象适配器采用对象组合的方式，更符合松耦合精神；
+3. Adapter模式可以实现的非常灵活，不必拘泥于GOF 23中定义的两种结构。例如，完全可以将Adapter模式中的“现存对象”作为新的接口方法参数，来达到适配的目的。
+
+`Practice` [14 Adapter](https://github.com/CaptainXX/Design_Patterns/tree/main/14_Adapter/14_Adapter)
 
 
 

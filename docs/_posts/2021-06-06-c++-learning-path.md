@@ -241,7 +241,15 @@ auto fn = bind(&Base::test, std::ref(b_ptr));
          
          ```
 
-         
+6. 写模版时，声明和实现分别写在两个文件里，报错：undefined reference
+
+   1. 把声明和实现都写在`.h`文件就解决了。
+
+7. 一个非常怪的BUG……，头文件写了`#include <Eigen/Dense>`，在代码中可以声明`Eigen::Matrix4d ...`，但无法使用任何`Eigen::Matrix`的成员方法，包括用`<<`操作符进行赋值。
+
+   1. 报错：`error: invalid operands to binary expression ('Eigen::Matrix4d' (aka 'Matrix<double, 4, 4>') and 'int')
+      IO.h:241:16: note: candidate template ignored: could not match 'DenseBase<type-parameter-0-0>' against 'int'`
+   2. 解决：`Ctrl+左键`点了一下之前能用的文件里面的`Eigen::Matrix4d`，跳转到`Eigen`头文件，然后再回来，就好了。（？？？？？？）
 
 
 
