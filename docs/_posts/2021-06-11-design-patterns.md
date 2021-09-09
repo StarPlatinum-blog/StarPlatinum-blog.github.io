@@ -48,11 +48,11 @@ categories: notes
 5. 接口隔离：
    - [Facade](#Facade)
    - [Proxy](#Proxy)
-   - Mediator
    - [Adapter](#Adapter)
+   - [Mediator](#Mediator)
 6. 状态变化：
+   - [State](#State)
    - Memento
-   - State
 7. 数据结构：
    - Composite
    - Iterator
@@ -619,6 +619,50 @@ Singleton* Singleton::GetInstance() {
 
 
 
+
+
+<a name="Mediator"></a>
+
+---
+
+### 模式 15：Mediator
+
+`Intention` 在软件构建过程中，经常会出现多个对象互相关联交互的情况，对象之间常常会维持一种复杂的引用关系，如果遇到一些需求的更改，这种直接的引用关系将面临不断地变化。在这种情况下，我们可使用一个“中介对象”来管理对象间的关联关系，避免相互交互的对象之间的紧耦合引用关系，从而更好地抵御变化。
+
+`Definition` 用一个中介对象来封装一系列的对象交互（封装变化）。中介者使各对象不需要显式的相互引用（编译期依赖 -> 运行期依赖），从而使其耦合松散（管理变化），而且可以独立地改变它们之间的交互。
+
+`Conclusion` 
+
+1. 将多个对象间复杂的关联关系解耦，Mediator模式将多个对象间的控制逻辑进行集中管理，变“多个对象互相关联”为多个对象和一个中介者关联，简化了系统的维护，抵御了可能的变化。
+2. 随着控制逻辑的复杂化，Mediator具体对象的实现可能相当复杂。这时候可以对Mediator对象进行分解处理。
+3. Facade模式是解耦系统间（单向）的对象关联关系；Mediator模式是解耦系统内各个对象之间的（双向）关联关系。
+
+
+
+<a name="State"></a>
+
+----
+
+### 模式 16：State
+
+`Intention` 在软件构建过程中，某些对象的状态如果改变，其行为也会随之而发生变化，比如文档处于只读状态，其支持的行为和读写状态支持的行为就可能完全不同。如何在运行时根据对象的状态来透明地更改对象的行为？而不会为对象操作和状态转化之间引入紧耦合？
+
+`Definition`允许一个对象在其内部状态改变时改变它的行为。从而使对象看起来似乎修改了其行为。
+
+`Hint` 状态模式应该使用`Singleton`来实现，共享一个`State`节省对象的开销。
+
+`Hint` 和`Strategy`模式异曲同工。如果`State`只有一种处理方法，那就和`Strategy`没有什么区别。
+
+`Conclusion`
+
+1. State模式将所有与一个特定状态相关的行为都放入一个State的子类对象中，在对象状态切换时，切换相应的对象；但同时维持State的接口，这样实现了具体操作与状态转换之间的解耦；
+2. 为不同的状态引入不同的对象使得状态转换变得更加明确，而且可以保证不会出现状态不一致的情况，因为转换是原子性的——即要么彻底转换过来，要么不转换；
+3. 如果State对象没有实例变量，那么可以上下文共享一个State对象，从而节省对象开销。
+
+`Practice` [16 State](https://github.com/CaptainXX/Design_Patterns/tree/main/16_State/16_State)
+
+
+
 <a name="UML"></a>
 
 ---
@@ -626,14 +670,6 @@ Singleton* Singleton::GetInstance() {
 ### UML类图的6种关系类型
 
 #### 1. Dependency (依赖)
-
-```mermaid
-graph LR
-	A[Class A]
-	B[Class B]
-	
-	A -.-> B
-```
 
 `Definition` 类A依赖类B，在代码中表现为在类A中临时使用了类B，这种关系具有偶然性、临时性，但类B的变化会对A造成影响，所以称之为依赖关系。
 
@@ -643,22 +679,19 @@ graph LR
 2. 类A中存在类B的局部变量；
 3. 类A通过静态成员使用类B；
 
+![]({{ site.url }}/imgs/design_patterns/UML/01_dependency.svg)
+
 
 
 #### 2. Association (关联)
-
-```mermaid
-graph LR
-	A[Class A]
-	B[Class B]
-	A --> B
-```
 
 `Definition` 类A关联类B，对于两个相对独立的对象，当一个对象的实例与另一个对象的一些特定实例存在固定的对应关系时，这两个对象之间为关联关系。
 
 `Behavior` 
 
-1. 类A中有类B的成员变量；
+1. 类A拥有类B的成员变量；
+
+![]({{ site.url }}/imgs/design_patterns/UML/02_association.svg)
 
 
 
@@ -668,7 +701,9 @@ graph LR
 
 `Behavior`
 
-1. 类B中有类A的成员变量，类A是类B的一部分，一般在类A中存在set方法用于设置类B的对象；
+1. 类B中有类A的成员变量，类A是类B逻辑上的一部分，一般在类A中存在set方法用于设置类B的对象；
+
+![]({{ site.url }}/imgs/design_patterns/UML/03_aggregation.svg)
 
 
 
@@ -680,6 +715,8 @@ graph LR
 
 1. 类A中有类B的成员变量，类A和类B不可分离；
 
+![]({{ site.url }}/imgs/design_patterns/UML/04_composition.svg)
+
 
 
 #### 5. Generalization (继承)
@@ -690,6 +727,8 @@ graph LR
 
 1. 类A : public 类B；
 
+![]({{ site.url }}/imgs/design_patterns/UML/05_generalization.svg)
+
 
 
 #### 6. Implementation (实现)
@@ -699,6 +738,8 @@ graph LR
 `Behavior` 
 
 1. 类B是含有纯虚函数的抽象类，类A继承类B后实现虚函数；
+
+![]({{ site.url }}/imgs/design_patterns/UML/06_implementation.svg)
 
 
 
