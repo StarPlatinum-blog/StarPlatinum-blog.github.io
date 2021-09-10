@@ -52,7 +52,7 @@ categories: notes
    - [Mediator](#Mediator)
 6. 状态变化：
    - [State](#State)
-   - Memento
+   - [Memento](#Memento)
 7. 数据结构：
    - Composite
    - Iterator
@@ -660,6 +660,31 @@ Singleton* Singleton::GetInstance() {
 3. 如果State对象没有实例变量，那么可以上下文共享一个State对象，从而节省对象开销。
 
 `Practice` [16 State](https://github.com/CaptainXX/Design_Patterns/tree/main/16_State/16_State)
+
+
+
+
+
+
+
+<a name="Memento"></a>
+
+---
+
+### 模式 17：Memento
+
+`Intention` 在软件构建过程中，某些对象的状态在转换过程中，可能由于某种需要，要求程序能够回溯到对象之前处于某个点时的状态。同时避免暴露对象的实现细节，不破坏封装性。
+
+`Definition` 在不破坏封装性的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态。这样以后就可以将该对象恢复到原先保存的状态。
+
+`Hint` Memento的一一映射的实现已经太低效了。
+
+`Hint` 实现的角度：用一种不破坏对象封装性的方法保存对象的状态。
+
+`Conclusion`
+
+1. 备忘录（Memento）存储原发器（Originator）对象的内部状态，在需要时恢复原发器状态；
+2. 
 
 
 
