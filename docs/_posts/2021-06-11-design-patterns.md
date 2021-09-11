@@ -54,7 +54,7 @@ categories: notes
    - [State](#State)
    - [Memento](#Memento)
 7. 数据结构：
-   - Composite
+   - [Composite](#Composite)
    - Iterator
    - Chain of Responsibility
 8. 行为变化：
@@ -684,7 +684,30 @@ Singleton* Singleton::GetInstance() {
 `Conclusion`
 
 1. 备忘录（Memento）存储原发器（Originator）对象的内部状态，在需要时恢复原发器状态；
-2. 
+2. Memento模式的核心是信息隐藏，即Originator需要向外界隐藏信息，保持其封装性。但同时又需要将状态保持到外界；
+3. 由于现代语言运行时，都具有相当的对象序列化支持，因此往往采用效率较高、又容易正确实现的序列化方案来实现Memento模式。
+
+`Practice` [17 Memento](https://github.com/CaptainXX/Design_Patterns/tree/main/17_Memento/17_Memento)
+
+
+
+<a name="Composite"></a>
+
+---
+
+### 模式 18：Composite
+
+`Intention` 在软件的某些情况下，客户代码过多地依赖于对象容器复杂的内部实现结构，对象容器内部实现结构的变化将引起客户代码的频繁变化，带来了代码的维护性、扩展性等弊端。
+
+`Composite` 将对象组合成树形结构以表示“部分-整体”的层次结构。Composite使得用户对单个对象和组合对象的使用具有一致性（稳定）。
+
+`Conclusion`
+
+1. `Composite`模式采用树形结构来实现普遍存在的对象容器，从而将“一对多”的关系转化为“一对一”的关系，使得客户代码可以一致地处理对象和对象容器，无需关心处理的是单个的对象，还是组合的对象容器；
+2. 将“客户代码与复杂度对象容器”解耦是Composite的核心思想，解耦之后，客户代码将与纯粹的抽象接口——而非对象容器的内部实现结构——发生依赖，从而更能“应对变化”。
+3. Composite模式在具体实现中，可以让父对象中的子对象反向追溯；如果父对象有频繁的遍历需求，可使用缓存技巧来改善效率。
+
+`Practice` [18 Composite](https://github.com/CaptainXX/Design_Patterns/tree/main/18_Composite/18_Composite)
 
 
 
