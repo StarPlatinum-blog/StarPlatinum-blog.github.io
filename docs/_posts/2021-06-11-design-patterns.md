@@ -55,7 +55,7 @@ categories: notes
    - [Memento](#Memento)
 7. 数据结构：
    - [Composite](#Composite)
-   - Iterator
+   - [Iterator](#Iterator)
    - Chain of Responsibility
 8. 行为变化：
    - Command
@@ -663,10 +663,6 @@ Singleton* Singleton::GetInstance() {
 
 
 
-
-
-
-
 <a name="Memento"></a>
 
 ---
@@ -708,6 +704,20 @@ Singleton* Singleton::GetInstance() {
 3. Composite模式在具体实现中，可以让父对象中的子对象反向追溯；如果父对象有频繁的遍历需求，可使用缓存技巧来改善效率。
 
 `Practice` [18 Composite](https://github.com/CaptainXX/Design_Patterns/tree/main/18_Composite/18_Composite)
+
+
+
+
+
+<a name="Iterator"></a>
+
+---
+
+### 模式 19：Iterator
+
+
+
+
 
 
 
