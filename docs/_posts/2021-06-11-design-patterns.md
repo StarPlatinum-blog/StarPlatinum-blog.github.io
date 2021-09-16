@@ -56,9 +56,9 @@ categories: notes
 7. 数据结构：
    - [Composite](#Composite)
    - [Iterator](#Iterator)
-   - Chain of Responsibility
+   - [Chain of Responsibility](Chain of Responsibility#)
 8. 行为变化：
-   - Command
+   - [Command](#Command)
    - Visitor
 9. 领域问题：
    - Interpreter
@@ -714,6 +714,14 @@ Singleton* Singleton::GetInstance() {
 ---
 
 ### 模式 19：Iterator
+
+
+
+
+
+
+
+### 模式 21：
 
 
 
