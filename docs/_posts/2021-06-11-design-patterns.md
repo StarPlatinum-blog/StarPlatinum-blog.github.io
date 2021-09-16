@@ -212,6 +212,12 @@ categories: notes
 
 `Practice` [02 Strategy](https://github.com/CaptainXX/Design_Patterns/tree/main/02_Strategy/02_Strategy)
 
+`UML`
+
+![]({{ site.url }}/imgs/design_patterns/PatternUmls/Strategy.drawio.svg)
+
+
+
 
 
 <a name="observer"></a>
