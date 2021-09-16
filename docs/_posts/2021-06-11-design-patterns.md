@@ -59,7 +59,7 @@ categories: notes
    - [Chain of Responsibility](#CoR)
 8. 行为变化：
    - [Command](#Command)
-   - Visitor
+   - [Visitor](#Visitor)
 9. 领域问题：
    - Interpreter
 
@@ -184,7 +184,11 @@ categories: notes
 
 `Practice` [01 Template Method](https://github.com/CaptainXX/Design_Patterns/tree/main/01_template_method)
 
- 
+ `UML`
+
+![]({{ site.url }}/imgs/design_patterns/PatternUmls/TemplateMethod.drawio.svg)
+
+
 
 <a name="Strategy"></a>
 
@@ -757,11 +761,51 @@ Singleton* Singleton::GetInstance() {
 
 
 
+<a name="Command"></a>
+
+---
+
+### 模式 21：Command
+
+`Intention` 行为请求者与行为实现者通常呈现一种紧耦合。但在某些场合——比如需要对行为进行记录、撤销、重做等处理，这种无法抵御变化的紧耦合是不合适的。如何将行为请求者和行为实现者解耦？
+
+`Definition` 将一个请求封装为一个对象，从而使你可以用不同的请求对客户进行参数化；对请求排队或记录请求日志，以及支持可撤销的操作。
+
+`Hint` C++函数对象和Command模式非常像，甚至有些场合比Command模式更好。
+
+`Hint` Command接口更严格，但有性能损失；C++函数对象是函数签名，只需要参数和返回值一致，并且是编译时多态，性能更好。
+
+`Hint` C++泛型编程实现了高性能的设计模式，不太需要Command以及Iterator模式，但在其他语言中需要。
+
+`Conclusion`
+
+1.   Command模式的根本目的在于将行为请求者与行为实现者解耦，在面向对象语言中，常见的实现手段是“将行为抽象为对象”；
+2.   实现Command接口的具体命令对象ConcreteCommand有时候会根据需要保存一些额外的状态信息。通过使用Composite模式，可以将多个命令封装为一个复合命令MacroCommand；
+3.   Command模式与C++中的函数对象有些类似。但两者定义行为接口的规范更严格，但有性能损失；C++函数对象以函数签名来定义行为接口规范，更灵活，性能更高。
 
 
-### 模式 21：
 
 
+
+<a name="Visitor"></a>
+
+---
+
+### 模式 22：Visitor
+
+`Intention` 由于需求的改变，某些类层次结构中常常需要增加新的行为（方法），如果直接在基类中做这样的更改，将会给子类带来很繁重的变更负担，甚至破坏原有设计。
+
+`Definition` 表示一个作用于某对象结构中的各元素的操作。使得可以在不改变（稳定）各元素的类的前提下定义（扩展）作用于这些元素的新操作（变化）。
+
+`Hint` 缺点是需要`ConcreteElement`也是稳定的。如果不稳定，就违反了依赖倒置原则，这样Visitor模式就不适用了 。
+
+`Hint` 一旦使用Visitor模式，代码就会变得很重，整个类层次都会被Visitor所绑架。
+
+`Conclusion`
+
+1.   Visitor模式通过所谓双重分发（double dispatch）来实现在不修改Element类层次结构的前提下，在运行时透明地为类层次结构上的各个类动态添加新的操作；
+2.   所谓双重分发即Visitor模式中间包括了两个多态分发：第一个为`accept`方法的多态辨析；第二个为`visitElementX`方法的多态辨析；
+3.   Visitor模式的最大缺点在于扩展类层次结构，会导致Visitor类的改变。因此Visitor适用于Element类层次结构稳定，而其中的操作却经常面临频繁改动。
 
 
 
