@@ -250,8 +250,43 @@ auto fn = bind(&Base::test, std::ref(b_ptr));
    1. 报错：`error: invalid operands to binary expression ('Eigen::Matrix4d' (aka 'Matrix<double, 4, 4>') and 'int')
       IO.h:241:16: note: candidate template ignored: could not match 'DenseBase<type-parameter-0-0>' against 'int'`
    2. 解决：`Ctrl+左键`点了一下之前能用的文件里面的`Eigen::Matrix4d`，跳转到`Eigen`头文件，然后再回来，就好了。（？？？？？？）
+   
+8. g++ 的神秘报错：
 
+    1. 情况是这样的：实现了一个基类A如下：
 
+        ```c++
+        class A {
+        public:
+            A() {}
+            virtual ~A() {}
+            virtual void Foo();
+        }
+        ```
+
+        然后继承它实现子类B：
+
+        ```c++
+        class B {
+        public:
+            B() {}
+            virtual ~B() {}
+            virtual void Foo() override final;
+        }
+        ```
+
+    2. 导致问题出现的原因是实现了子类的`Foo`函数，而没有实现父类的`Foo`函数，`g++`报了一个很奇怪的错误：
+
+        ```
+        in function `A::~A()':
+        undefined reference to `vtable for A'
+        undefined reference to `typeinfo for A'
+        collect2: error: ld returned 1 exit status
+        ```
+
+        大概是说编译器找不到基类的`type_info`，而虚析构函数又实现了。
+
+    3. 需要将`Foo`声明为纯虚函数或者对基类的`Foo`进行实现才能解决这个错误。
 
 ----
 

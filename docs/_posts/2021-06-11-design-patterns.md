@@ -41,7 +41,7 @@ categories: notes
    - [Factory Method](#Factory)
    - [Abstract Factory](#AbstractFactory)
    - [Prototype](#Prototype)
-   - [Builder](#Builder)
+   - [Builder](#Builder) #
 4. 对象性能：解决性能问题
    - [Singleton](#Singleton)
    - [Flyweight](#Flyweight)
@@ -49,21 +49,25 @@ categories: notes
    - [Facade](#Facade)
    - [Proxy](#Proxy)
    - [Adapter](#Adapter)
-   - [Mediator](#Mediator)
+   - [Mediator](#Mediator) #
 6. 状态变化：
    - [State](#State)
-   - [Memento](#Memento)
+   - [Memento](#Memento) #
 7. 数据结构：
    - [Composite](#Composite)
-   - [Iterator](#Iterator)
-   - [Chain of Responsibility](#CoR)
+   - [Iterator](#Iterator) #
+   - [Chain of Responsibility](#CoR) #
 8. 行为变化：
-   - Command
-   - Visitor
+   - [Command](#Command) #
+   - [Visitor](#Visitor) #
 9. 领域问题：
-   - Interpreter
+   - [Interpreter](#Interpreter) #
+
+>   标注'#'的模式是目前不太常用的模式，或者是C++中已经有了更好的替代品。部分模式没有在Practice部分进行实现。
 
 
+
+[设计模式总结](#Conclusion)
 
 [UML关系类型](#UML)
 
@@ -184,7 +188,11 @@ categories: notes
 
 `Practice` [01 Template Method](https://github.com/CaptainXX/Design_Patterns/tree/main/01_template_method)
 
- 
+ `UML`
+
+![]({{ site.url }}/imgs/design_patterns/PatternUmls/TemplateMethod.drawio.svg)
+
+
 
 <a name="Strategy"></a>
 
@@ -207,6 +215,12 @@ categories: notes
 3. 如果Strategy没有实例变量，那么各个上下文可以**共享同一个Strategy对象**，从而节省对象开销。（Singleton）
 
 `Practice` [02 Strategy](https://github.com/CaptainXX/Design_Patterns/tree/main/02_Strategy/02_Strategy)
+
+`UML`
+
+![]({{ site.url }}/imgs/design_patterns/PatternUmls/Strategy.drawio.svg)
+
+
 
 
 
@@ -756,6 +770,121 @@ Singleton* Singleton::GetInstance() {
 
 
 
+
+<a name="Command"></a>
+
+---
+
+### 模式 21：Command
+
+`Intention` 行为请求者与行为实现者通常呈现一种紧耦合。但在某些场合——比如需要对行为进行记录、撤销、重做等处理，这种无法抵御变化的紧耦合是不合适的。如何将行为请求者和行为实现者解耦？
+
+`Definition` 将一个请求封装为一个对象，从而使你可以用不同的请求对客户进行参数化；对请求排队或记录请求日志，以及支持可撤销的操作。
+
+`Hint` C++函数对象和Command模式非常像，甚至有些场合比Command模式更好。
+
+`Hint` Command接口更严格，但有性能损失；C++函数对象是函数签名，只需要参数和返回值一致，并且是编译时多态，性能更好。
+
+`Hint` C++泛型编程实现了高性能的设计模式，不太需要Command以及Iterator模式，但在其他语言中需要。
+
+`Conclusion`
+
+1.   Command模式的根本目的在于将行为请求者与行为实现者解耦，在面向对象语言中，常见的实现手段是“将行为抽象为对象”；
+2.   实现Command接口的具体命令对象ConcreteCommand有时候会根据需要保存一些额外的状态信息。通过使用Composite模式，可以将多个命令封装为一个复合命令MacroCommand；
+3.   Command模式与C++中的函数对象有些类似。但两者定义行为接口的规范更严格，但有性能损失；C++函数对象以函数签名来定义行为接口规范，更灵活，性能更高。
+
+
+
+
+
+<a name="Visitor"></a>
+
+---
+
+### 模式 22：Visitor
+
+`Intention` 由于需求的改变，某些类层次结构中常常需要增加新的行为（方法），如果直接在基类中做这样的更改，将会给子类带来很繁重的变更负担，甚至破坏原有设计。
+
+`Definition` 表示一个作用于某对象结构中的各元素的操作。使得可以在不改变（稳定）各元素的类的前提下定义（扩展）作用于这些元素的新操作（变化）。
+
+`Hint` 缺点是需要`ConcreteElement`也是稳定的。如果不稳定，就违反了依赖倒置原则，这样Visitor模式就不适用了 。
+
+`Hint` 一旦使用Visitor模式，代码就会变得很重，整个类层次都会被Visitor所绑架。
+
+`Conclusion`
+
+1.   Visitor模式通过所谓双重分发（double dispatch）来实现在不修改Element类层次结构的前提下，在运行时透明地为类层次结构上的各个类动态添加新的操作；
+2.   所谓双重分发即Visitor模式中间包括了两个多态分发：第一个为`accept`方法的多态辨析；第二个为`visitElementX`方法的多态辨析；
+3.   Visitor模式的最大缺点在于扩展类层次结构，会导致Visitor类的改变。因此Visitor适用于Element类层次结构稳定，而其中的操作却经常面临频繁改动。
+
+
+
+<a name="Interpreter"></a>
+
+---
+
+### 模式 23：Interpreter
+
+`Intention` 如果某一特定领域的问题比较复杂，类似的结构不断重复出现，如果使用普通的编程方式来实现将面临非常频繁的变化。在这种情况下，将特定领域的问题表达为某种语法规则下的句子，然后构建一个解释器来解释这样的句子，从而达到解决问题的目的。
+
+`Definition` 给定一个语言，定义它的文法的一种表示，并定义一种解释器，这个解释器使用该表示来解释语言中的句子。
+
+`Hint` 文法比较复杂的话，面向对象的解析器有性能问题。但如果是简单的问题可以自己写一个解析器来做。
+
+`Conclusion` 
+
+1.   Interpreter模式的应用场合是其应用的难点，只有满足“业务规则频繁变化”，且类似的结构不断重复出现，并且容易抽象为语法规则的问题，才适合使用Interpreter模式；
+2.   使用Interpreter模式来表示文法规则，从而可以使用面向对象技巧来方便地扩展文法；
+3.   Interpreter模式比较适合简单的文法表示，对于复杂的文法表示，Interpreter模式会产生比较大的类层次结构，需要求助于语法分析生成器这样的标准工具。
+
+
+
+<a name="Conclusion"></a>
+
+---
+
+### 设计模式总结
+
+一个目标：管理变化，提高复用；
+
+两种手段：分解&&抽象；
+
+八大原则；
+
+重构技法；
+
+从封装变化角度对模式分类；
+
+C++对象模型在继承和组合的两种情况中，性能是完全相同的；
+
+什么时候不用模式？不要盲目的使用模式
+
+1.   代码可读性很差时；在Refactoring中有如何提高代码可读性；
+2.   需求理解还很浅时；项目起始时（第一版）可以先实现功能，而不是实现模式；
+3.   变化没有显现时；不要做不恰当的预测变化；
+4.   不是系统的关键依赖点；在系统比较关键的位置使用设计模式；
+5.   项目没有复用价值时；
+6.   项目将要发布时；
+
+经验之谈：
+
+1.   不要为模式而模式；
+2.   关注抽象类&接口；
+3.   理清变化点和稳定点；
+4.   审视依赖关系；
+5.   要有`Framework`和`Application`的区隔思维；
+6.   良好的设计是演化的结果；
+
+设计模式成长之路：
+
+1.   手中无剑，心中无剑：见模式而不知；
+2.   手中有剑，心中无剑：可以识别模式，作为应用开发人员使用模式；
+3.   手中有剑，心中有剑：作为框架开发人员为应用设计某些模式；
+4.   手中无剑，心中有剑：忘掉模式，只有原则；
+
+
+
+23种设计模式的学习到此就结束了，后续会补充上所有设计模式的UML类图。
 
 
 
