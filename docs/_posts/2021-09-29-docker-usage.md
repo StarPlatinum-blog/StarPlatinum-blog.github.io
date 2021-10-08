@@ -11,7 +11,7 @@ categories: notes
 
 通过Repository来安装docker
 
-1.   安装一些依赖以及让apt能够通过HTTPS来使用Repository
+### 1.1 安装一些依赖以及让apt能够通过HTTPS来使用Repository
 
 ```sh
 sudo apt-get update
@@ -23,14 +23,18 @@ sudo apt-get install \
     lsb-release
 ```
 
-2.   添加Docker的官方GPG Key
+
+
+### 1.2 添加Docker的官方GPG Key
 
 ```sh
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
 ```
 
-3.   设置使用stable repository
+
+
+### 1.3 设置使用stable repository
 
 ```sh
 echo \
@@ -40,7 +44,9 @@ echo \
 
 LinuxMint需要查看基于什么版本的Ubuntu，然后替换`$(lsb_release -cs)`为对应版本，通过命令`cat /etc/os-release`查看。
 
-4.   安装Docker Engine
+
+
+### 1.4 安装Docker Engine
 
 ```sh
 sudo apt-get update
@@ -48,5 +54,13 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 
 ```
 
-<canvas></canvas>
+
+
+
+
+## 2. 制作镜像
+
+### 2.1 Dockerfile
+
+参考[官方文档](https://docs.docker.com/engine/reference/builder/)，
 
