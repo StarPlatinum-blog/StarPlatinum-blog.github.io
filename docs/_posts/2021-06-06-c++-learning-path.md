@@ -198,6 +198,40 @@ Base* b_ptr = new A(10);
 auto fn = bind(&Base::test, std::ref(b_ptr));
 ```
 
+##### C++11 随机数
+
+产生均匀分布的随机数：
+
+```c++
+#include<iostream>
+#include<random>
+#include<time.h>
+  
+using std::cout;
+using std::endl;
+using std::cin;
+  
+  
+int main()
+{
+    std::default_random_engine random(time(NULL));
+    std::uniform_int_distribution<int> dis1(0, 100);
+    std::uniform_real_distribution<double> dis2(0.0, 1.0);
+  
+    for(int i = 0; i < 10; ++i)
+        cout<<dis1(random)<<' ';
+    cout<<endl;
+  
+    for(int i = 0; i < 10; ++i)
+        cout<<dis2(random)<<' ';
+    cout<<endl;
+  
+    return 0;
+}
+```
+
+
+
 
 
 ## CPP Errors
