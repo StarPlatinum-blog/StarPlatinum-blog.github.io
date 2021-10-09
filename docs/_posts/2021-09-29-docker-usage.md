@@ -62,5 +62,141 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 
 ### 2.1 Dockerfile
 
-参考[官方文档](https://docs.docker.com/engine/reference/builder/)，
+参考[官方文档](https://docs.docker.com/engine/reference/builder/)。
+
+
+
+#### 2.1.1 Instructions
+
+| Instruction Name | Usage                   | Result                                                       |
+| ---------------- | ----------------------- | ------------------------------------------------------------ |
+| FROM             | FROM [base image]       | creates a layer from the `ubuntu:18.04` Docker image.        |
+| COPY             | COPY [src] [dest]       | adds files from your Docker client’s current directory.      |
+| RUN              | RUN [commands]          | builds your application with `make`.                         |
+| CMD              | CMD [commands]          | pecifies what command to run within the container.           |
+| EXPOSE           | EXPOSE [port number]    | indicates the ports on which a container listens for connections. |
+| ENV              | ENV [key=value]         | sets the environment variable `<key>` to the value `<value>`. |
+| ENTRYPOINT       | ENTRYPOINT ["anything"] | set the image’s main command, allowing that image to be run as though it was that command (and then use `CMD` as the default flags). |
+| USER             | USER [user[:group]]     | sets the user name (or UID) and optionally the user group (or GID) to use when running the image and for any RUN, CMD and ENTRYPOINT instructions that follow it in the Dockerfile. |
+|                  |                         |                                                              |
+
+
+
+
+
+## 3. 使用镜像
+
+### 3.1 创建镜像
+
+从Dockerfile创建镜像（Dockerfile在当前目录），当前目录称为上下文`context`：
+
+`docker build -t [ImageName]:[Version] .` 
+
+制定Dockerfile：
+
+`docker build -t [ImageName]:[Version] -f dockerfiles/Dockerfile context`
+
+
+
+### 3.2 创建容器
+
+```sh
+docker run -dit -p 2222:22 [ImageName]:[Version]
+```
+
+-   `-dit`以deamon交互的方式运行；
+
+然后通过`exec`命令连接docker：
+
+```sh
+docker exec -it [Container ID] /bin/bash
+```
+
+
+
+在docker中使用显卡：
+
+-   启动容器时，设置`--runtime=nvidia`或`--gpus all`
+
+
+
+### 3.3 管理容器和镜像
+
+进入容器：
+
+```sh
+docker attach [Container ID]
+```
+
+上面的命令可以attach到容器启动命令的终端。
+
+```sh
+docker exec -it [Container ID] /bin/bash
+```
+
+这条命令就是新建了终端然后打开。
+
+
+
+停止正在运行的容器：
+
+```sh
+docker stop [Container ID]
+```
+
+
+
+启动停止的容器：
+
+```sh
+docker start [Container ID]
+```
+
+
+
+重启容器：
+
+```sh
+docker restart [Container ID]
+```
+
+
+
+删除镜像：
+
+```sh
+docker rmi [Image ID]
+```
+
+
+
+删除容器：
+
+```sh
+docker rm [Container ID]
+```
+
+
+
+查看运行的容器：
+
+```sh
+docker ps
+```
+
+
+
+查看所有容器（包括已退出的）：
+
+```sh
+docker ps -a
+```
+
+
+
+查看所有镜像：
+
+```sh
+docker images
+```
 
