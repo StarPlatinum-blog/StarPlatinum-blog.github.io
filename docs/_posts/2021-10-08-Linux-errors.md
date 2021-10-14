@@ -45,3 +45,21 @@ VERSION_CODENAME=uma
 UBUNTU_CODENAME=focal ## ! This line
 ```
 
+
+
+### 2. 安装PyAudio时报错：fatal error: portaudio.h: No such file or directory
+
+需要安装依赖项`libportaudio2`
+
+```sh
+sudo apt-get install libportaudio2
+```
+
+然后`pip install PyAudio`
+
+或者直接使用`apt`安装：
+
+```sh
+sudo apt-get install python3-pyaudio
+```
+

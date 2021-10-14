@@ -25,3 +25,9 @@ categories: notes
 
 从官网抄一个很拽的颜文字：`¯\_(ツ)_/¯`。
 
+
+
+### 3. Ros Melodic on Ubuntu
+
+[安装文档](http://wiki.ros.org/cn/melodic/Installation/Ubuntu)
+

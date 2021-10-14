@@ -101,7 +101,14 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 ### 3.2 创建容器
 
 ```sh
-docker run -dit -p 2222:22 [ImageName]:[Version]
+docker run -d -p 2222:22 [ImageName]:[Version]
+## 要使用GPU、opencv图像显示：
+docker run -dit -p 2222:22 \
+	-gpus all -v /tmp/.X11-unix:/tmp/.X11-unix \
+	-e DISPLAY=unix$DISPLAY \
+	-e NVIDIA_DRIVER_CAPABILITIES=compute,utility \
+	-e NVIDIA_VISIBLE_DEVICES=all \
+	[ImageName]:[Version]
 ```
 
 -   `-dit`以deamon交互的方式运行；
@@ -117,6 +124,8 @@ docker exec -it [Container ID] /bin/bash
 在docker中使用显卡：
 
 -   启动容器时，设置`--runtime=nvidia`或`--gpus all`
+
+要显示图像：`--env="DISPLAY"`
 
 
 
@@ -198,5 +207,58 @@ docker ps -a
 
 ```sh
 docker images
+```
+
+
+
+### 3.4 Docker中使用NVIDIA GPU
+
+首先确认宿主机中已经安装好了显卡驱动：
+
+```sh
+nvidia-smi
+```
+
+如果显示找不到命令，先安装显卡驱动。
+
+如果显示显卡信息，就可以在宿主机内安装NVIDIA container runtime。
+
+#### 1. 添加Repo和GPG Key
+
+```sh
+curl -s -L https://nvidia.github.io/nvidia-container-runtime/gpgkey | \
+  sudo apt-key add -
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-container-runtime/$distribution/nvidia-container-runtime.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-container-runtime.list
+sudo apt-get update
+```
+
+
+
+#### 2. 把runtime添加到docker中
+
+```sh
+sudo systemctl stop docker
+sudo dockerd --add-runtime=nvidia=/usr/bin/nvidia-container-runtime
+```
+
+
+
+### 3.5 Docker 中使用桌面环境：如qt, cv2.imshow等
+
+在启动容器时添加选项：
+
+```sh
+-v /tmp/.X11-unix:/tmp/.X11-unix
+-e DISPLAY=unix$DISPLAY
+```
+
+同时在宿主机执行：
+
+```sh
+$ sudo apt-get install x11-xserver-utils
+
+$ xhost +
 ```
 
