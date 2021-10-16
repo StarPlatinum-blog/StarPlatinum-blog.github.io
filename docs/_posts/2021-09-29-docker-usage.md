@@ -241,6 +241,23 @@ sudo apt-get update
 ```sh
 sudo systemctl stop docker
 sudo dockerd --add-runtime=nvidia=/usr/bin/nvidia-container-runtime
+
+# 修改 /etc/docker/daemon.json，配置默认nvidia运行
+sudo vim /etc/docker/daemon.json 
+# 在daemon.json文件中添加如下内容，如下示意图
+{
+"default-runtime": "nvidia"
+    "runtimes": {
+        "nvidia": {
+            "path": "/usr/bin/nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    }
+}
+# 重启docker服务即可生效
+Sudo systemctl daemon-reload
+Sudo systemctl restart docker
+
 ```
 
 
