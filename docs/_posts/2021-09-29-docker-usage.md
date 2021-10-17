@@ -131,83 +131,20 @@ docker exec -it [Container ID] /bin/bash
 
 ### 3.3 管理容器和镜像
 
-进入容器：
+#### 0. docker基本命令
 
-```sh
-docker attach [Container ID]
-```
-
-上面的命令可以attach到容器启动命令的终端。
-
-```sh
-docker exec -it [Container ID] /bin/bash
-```
-
-这条命令就是新建了终端然后打开。
-
-
-
-停止正在运行的容器：
-
-```sh
-docker stop [Container ID]
-```
-
-
-
-启动停止的容器：
-
-```sh
-docker start [Container ID]
-```
-
-
-
-重启容器：
-
-```sh
-docker restart [Container ID]
-```
-
-
-
-删除镜像：
-
-```sh
-docker rmi [Image ID]
-```
-
-
-
-删除容器：
-
-```sh
-docker rm [Container ID]
-```
-
-
-
-查看运行的容器：
-
-```sh
-docker ps
-```
-
-
-
-查看所有容器（包括已退出的）：
-
-```sh
-docker ps -a
-```
-
-
-
-查看所有镜像：
-
-```sh
-docker images
-```
+| 命令                                     | 功能                     | 备注                                 |
+| ---------------------------------------- | ------------------------ | ------------------------------------ |
+| docker ps                                | 查看运行的容器           | 当你需要一个容器的ID时运行这条指令   |
+| docker ps -a                             | 查看所有容器             | 包括已退出的                         |
+| docker exec -it [Container ID] /bin/bash | 在容器中新建终端然后打开 |                                      |
+| docker images                            | 查看所有镜像的信息       |                                      |
+| docker stop [Container ID]               | 停止正在运行的容器       | 停止了容器后才能删除                 |
+| docker rm [Container ID]                 | 删除容器                 | 也可以用-f选项强制删除一个运行的容器 |
+| docker rmi [Image ID]                    | 删除镜像                 |                                      |
+| docker attach [Container ID]             | 进入容器                 | 连接到容器启动命令的终端             |
+| docker start [Container ID]              | 启动停止的容器           |                                      |
+| docker restart [Container ID]            | 重启容器                 |                                      |
 
 
 
@@ -255,8 +192,8 @@ sudo vim /etc/docker/daemon.json
     }
 }
 # 重启docker服务即可生效
-Sudo systemctl daemon-reload
-Sudo systemctl restart docker
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 
 ```
 
