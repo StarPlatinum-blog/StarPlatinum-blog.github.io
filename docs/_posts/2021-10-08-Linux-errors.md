@@ -5,7 +5,11 @@ date: 21-10-08 20:08:15 +0800
 categories: notes
 ---
 
-记录在Linux环境下的各种Errors以及Settings
+记录在Linux环境下的Errors，Settings和Tricks。
+
+以下的所有内容皆来自在`Linux Mint 20.2`下的实验，maybe work for Ubuntu, too.
+
+
 
 ## Errors
 
@@ -63,3 +67,19 @@ sudo apt-get install libportaudio2
 sudo apt-get install python3-pyaudio
 ```
 
+
+
+## Tricks
+
+### 1. 命令行获取本机对其他公网机器的公网IP
+
+```sh
+curl ip.me
+# 111.187.23.115
+```
+
+
+
+### 2. 快速复制粘贴终端上的文字
+
+用鼠标选中文字后，单击滚轮。
