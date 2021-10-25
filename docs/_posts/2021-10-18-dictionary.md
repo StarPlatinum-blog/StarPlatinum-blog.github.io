@@ -15,8 +15,8 @@ categories: notes
 | intercept   | n. 截距，截听 v. 抢截 |      |
 | malignant   | adj. 恶性、有害的     |      |
 | regression  | n. 回归               |      |
-|             |                       |      |
-|             |                       |      |
+| converge    | v. 收敛               |      |
+| fabulous    | adj. 极好的           |      |
 |             |                       |      |
 |             |                       |      |
 
