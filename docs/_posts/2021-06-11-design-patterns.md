@@ -337,12 +337,6 @@ categories: notes
 2. Factory Method模式通过面向对象的手法，将所要创建的具体对象工作延迟到子类，从而实现一种扩展（而非更改）的策略，较好地解决了这种紧耦合关系；
 3. Factory Method模式解决“单个对象”的需求变化。缺点在于要求创建方法/参数相同。
 
-`Usage`
-
-1. yigexitong 
-
-
-
 `Practice` [06 Factory Method](https://github.com/CaptainXX/Design_Patterns/tree/main/06_Factory_Method/06_Factory_Method)
 
 
