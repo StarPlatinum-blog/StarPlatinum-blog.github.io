@@ -178,9 +178,11 @@ At each iteration j, one should simultaneously update the parameters $\theta_1, 
 In this video we explored the scenario where we used one parameter $\theta_1$ and plotted its cost function to implement a gradient descent. Our formula for a single parameter was : 
 
 Repeat until convergence:
-$
+
+$$
 \theta_1:=\theta_1-\alpha \frac{d}{d\theta_1} J(\theta_1)
-$
+$$
+
 Regardless of the slope's sign for $\frac{d}{d\theta_1} J(\theta_1)$, $\theta_1$ eventually converges to its minimum value. The following graph shows that when the slope is negative, the value of $\theta_1$ increases and when it is positive, the value of $\theta_1$ decreases.
 
 ![]({{ site.url }}/imgs/machine_learning/week1/11_gradient_descent_intuition.png)
@@ -192,9 +194,11 @@ On a side note, we should adjust our parameter $\alpha$ to ensure that the gradi
 >   How does gradient descent converge with a fixed step size *α*?
 
 The intuition behind the convergence is that $\frac{d}{d\theta_1} J(\theta_1)$ approaches 0 as we approach the bottom of our convex function. At the minimum, the derivative will always be 0 and thus we get: 
-$
+
+$$
 \theta_1:=\theta_1-\alpha
-$
+$$
+
 ![]({{ site.url }}/imgs/machine_learning/week1/13_gradient_descent_intuition.png)
 
 
@@ -202,10 +206,13 @@ $
 ### Gradient Descent for Linear Regression
 
 When specifically applied to the case of linear regression, a new form of the gradient descent equation can be derived. We can substitute our actual cost function and our actual hypothesis function and modify the equation to :
-$repeat\ until\ convergence: \{\\
+
+$$
+repeat\ until\ convergence: \{\\
 \theta_0 :=\theta_0-\alpha\frac{1}{m}\sum_{i=1}^{m}{(h_\theta(x_i)-y_i)} \\
 \theta_1 :=\theta_1-\alpha\frac{1}{m}\sum_{i=1}^{m}{((h_\theta(x_i)-y_i)x_i)} \\
-\}$
+\}
+$$
 
 
 where m is the size of the training set, $\theta_0$ a constant that will be changing simultaneously with $\theta_1$ and $x_{i}, y_{i}$ are values of the given training set (data).
