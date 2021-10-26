@@ -163,7 +163,7 @@ The gradient descent algorithm is:
 
 $$
 repeat\ until\ convergence:
-
+\\
 \theta_j := \theta_j - \alpha \frac{\partial}{\partial \theta_j} J(\theta_0, \theta_0)
 $$
 
