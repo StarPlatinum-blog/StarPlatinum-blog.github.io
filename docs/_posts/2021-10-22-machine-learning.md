@@ -97,9 +97,9 @@ When the target variable that we’re trying to predict is continuous, such as i
 
 We can measure the accuracy of our hypothesis function by using a **cost function**. This takes an average difference (actually a fancier version of an average) of all the results of the hypothesis with inputs from x's and the actual output y's.
 
-$
+$$
 J(\theta_0, \theta_1) = \dfrac {1}{2m} \displaystyle \sum _{i=1}^m \left ( \hat{y}_{i}- y_{i} \right)^2 = \dfrac {1}{2m} \displaystyle \sum _{i=1}^m \left (h_\theta (x_{i}) - y_{i} \right)^2
-$
+$$
 
 To break it apart, it is $\frac{1}{2} \bar{x}$ where $\bar{x}$ is the mean of the squares of $h_\theta (x_{i}) - y_{i}$ , or the difference between the predicted value and the actual value.
 
@@ -241,7 +241,7 @@ x^{(i)}=the\ input\ (features)\ of\ the\ i^{th}\ training\ example
 m=the\ number\ of\ training\ examples
 \\
 n=the\ number\ of\ features
-$
+$$$
 
 *x*(*i*)*j**x*(*i*)*m**n*=value of feature *j* in the *i**t**h* training example=the input (features) of the *i**t**h* training example=the number of training examples=the number of features
 
@@ -275,20 +275,20 @@ Remark: Note that for convenience reasons in this course we assume $x_{0}^{(i)} 
 ### Gradient Descent for Multiple Variables
 
 The gradient descent equation itself is generally the same form; we just have to repeat it for our 'n' features:
-$
+$$
 repeat\ until\ convergence: \{\\
 \theta_0 :=\theta_0-\alpha\frac{1}{m}\sum_{i=1}^{m}{(h_\theta(x_i)-y_i)\cdot x_0^{(i)}} \\
 \theta_1 :=\theta_1-\alpha\frac{1}{m}\sum_{i=1}^{m}{((h_\theta(x_i)-y_i)\cdot x_1^{(i)})} \\
 \theta_2 :=\theta_2-\alpha\frac{1}{m}\sum_{i=1}^{m}{((h_\theta(x_i)-y_i)\cdot x_2^{(i)})} \\
 ...
 \}
-$
+$$
 In other words:
-$
+$$
 repeat\ until\ convergence:\{
 \\
 θ_j:=θ_j−α1m∑i=1m(hθ(x(i))−y(i))⋅x(i)jfor j := 0...n\}
-$
+$$
 The following image compares gradient descent with one variable to gradient descent with multiple variables: 
 
 ![]({{ site.url }}/imgs/machine_learning/week2/01_mul_var_gradient.png)
