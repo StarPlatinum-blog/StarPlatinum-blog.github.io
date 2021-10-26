@@ -200,14 +200,10 @@ $$
 ### Gradient Descent for Linear Regression
 
 When specifically applied to the case of linear regression, a new form of the gradient descent equation can be derived. We can substitute our actual cost function and our actual hypothesis function and modify the equation to :
-
-
-$$
-repeat\ until\ convergence: \{\\
+$repeat\ until\ convergence: \{\\
 \theta_0 :=\theta_0-\alpha\frac{1}{m}\sum_{i=1}^{m}{(h_\theta(x_i)-y_i)} \\
 \theta_1 :=\theta_1-\alpha\frac{1}{m}\sum_{i=1}^{m}{((h_\theta(x_i)-y_i)x_i)} \\
-\}
-$$
+\}$
 
 
 where m is the size of the training set, $\theta_0$ a constant that will be changing simultaneously with $\theta_1$ and $$x_{i}, y_{i}$$ are values of the given training set (data).
