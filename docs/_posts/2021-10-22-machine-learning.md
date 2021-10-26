@@ -176,9 +176,9 @@ At each iteration j, one should simultaneously update the parameters $\theta_1, 
 In this video we explored the scenario where we used one parameter $\theta_1$ and plotted its cost function to implement a gradient descent. Our formula for a single parameter was : 
 
 Repeat until convergence:
-$$
+$
 \theta_1:=\theta_1-\alpha \frac{d}{d\theta_1} J(\theta_1)
-$$
+$
 Regardless of the slope's sign for $\frac{d}{d\theta_1} J(\theta_1)$, $\theta_1$ eventually converges to its minimum value. The following graph shows that when the slope is negative, the value of $\theta_1$ increases and when it is positive, the value of $\theta_1$ decreases.
 
 ![]({{ site.url }}/imgs/machine_learning/week1/11_gradient_descent_intuition.png)
@@ -190,9 +190,9 @@ On a side note, we should adjust our parameter $\alpha$ to ensure that the gradi
 >   How does gradient descent converge with a fixed step size *α*?
 
 The intuition behind the convergence is that $\frac{d}{d\theta_1} J(\theta_1)$ approaches 0 as we approach the bottom of our convex function. At the minimum, the derivative will always be 0 and thus we get: 
-$$
+$
 \theta_1:=\theta_1-\alpha
-$$
+$
 ![]({{ site.url }}/imgs/machine_learning/week1/13_gradient_descent_intuition.png)
 
 
@@ -206,7 +206,7 @@ $repeat\ until\ convergence: \{\\
 \}$
 
 
-where m is the size of the training set, $\theta_0$ a constant that will be changing simultaneously with $\theta_1$ and $$x_{i}, y_{i}$$ are values of the given training set (data).
+where m is the size of the training set, $\theta_0$ a constant that will be changing simultaneously with $\theta_1$ and $x_{i}, y_{i}$ are values of the given training set (data).
 
 Note that we have separated out the two cases for $\theta_j$ into separate equations for $\theta_0$ and $\theta_1$; and that for $\theta_1$ we are multiplying $x_{i}$ at the end due to the derivative. The following is a derivation of $\frac {\partial}{\partial \theta_j}J(\theta)$ for a single example : 
 
@@ -231,7 +231,7 @@ The ellipses shown above are the contours of a quadratic function. Also shown is
 Linear regression with multiple variables is also known as "multivariate linear regression".
 
 We now introduce notation for equations where we can have any number of input variables.
-$$
+$
 x^{(i)}_j=value\ of\ feature\ j\ in\ the\ i^{th}\ training\ example
 \\
 x^{(i)}=the\ input\ (features)\ of\ the\ i^{th}\ training\ example
@@ -239,19 +239,19 @@ x^{(i)}=the\ input\ (features)\ of\ the\ i^{th}\ training\ example
 m=the\ number\ of\ training\ examples
 \\
 n=the\ number\ of\ features
-$$
+$
 
 *x*(*i*)*j**x*(*i*)*m**n*=value of feature *j* in the *i**t**h* training example=the input (features) of the *i**t**h* training example=the number of training examples=the number of features
 
 The multivariable form of the hypothesis function accommodating these multiple features is as follows:
 
-$$
+$
 h_\theta (x) = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \theta_3 x_3 + \cdots + \theta_n x_n
-$$
+$
 In order to develop intuition about this function, we can think about $\theta_0$ as the basic price of a house, $\theta_1$ as the price per square meter, $\theta_2$ as the price per floor, etc. $x_1$ will be the number of square meters in the house, $x_2$ the number of floors, etc.
 
 Using the definition of matrix multiplication, our multivariable hypothesis function can be concisely represented as:
-$$
+$
 h_{\theta}(x)=
 \begin{bmatrix}
 \theta_0 & \theta_1 & ... & \theta_n
@@ -263,7 +263,7 @@ x_1 \\
 x_n
 \end{bmatrix}
 =\theta^Tx
-$$
+$
 This is a vectorization of our hypothesis function for one training example; see the lessons on vectorization to learn more.
 
 Remark: Note that for convenience reasons in this course we assume $x_{0}^{(i)} =1 \text{ for } (i\in { 1,\dots, m } )$ . This allows us to do matrix operations with theta and x. Hence making the two vectors '$\theta$' and $x^{(i)}$ match each other element-wise (that is, have the same number of elements: n+1).
@@ -273,20 +273,20 @@ Remark: Note that for convenience reasons in this course we assume $x_{0}^{(i)} 
 ### Gradient Descent for Multiple Variables
 
 The gradient descent equation itself is generally the same form; we just have to repeat it for our 'n' features:
-$$
+$
 repeat\ until\ convergence: \{\\
 \theta_0 :=\theta_0-\alpha\frac{1}{m}\sum_{i=1}^{m}{(h_\theta(x_i)-y_i)\cdot x_0^{(i)}} \\
 \theta_1 :=\theta_1-\alpha\frac{1}{m}\sum_{i=1}^{m}{((h_\theta(x_i)-y_i)\cdot x_1^{(i)})} \\
 \theta_2 :=\theta_2-\alpha\frac{1}{m}\sum_{i=1}^{m}{((h_\theta(x_i)-y_i)\cdot x_2^{(i)})} \\
 ...
 \}
-$$
+$
 In other words:
-$$
+$
 repeat\ until\ convergence:\{
 \\
 θ_j:=θ_j−α1m∑i=1m(hθ(x(i))−y(i))⋅x(i)jfor j := 0...n\}
-$$
+$
 The following image compares gradient descent with one variable to gradient descent with multiple variables: 
 
 ![]({{ site.url }}/imgs/machine_learning/week2/01_mul_var_gradient.png)
