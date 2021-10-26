@@ -161,9 +161,11 @@ For example, the distance between each 'star' in the graph above represents a st
 
 The gradient descent algorithm is:
 
-repeat until convergence:
+$$
+repeat\ until\ convergence:
 
-$\theta_j := \theta_j - \alpha \frac{\partial}{\partial \theta_j} J(\theta_0, \theta_0)$
+\theta_j := \theta_j - \alpha \frac{\partial}{\partial \theta_j} J(\theta_0, \theta_0)
+$$
 
 where
 
@@ -240,7 +242,8 @@ The ellipses shown above are the contours of a quadratic function. Also shown is
 Linear regression with multiple variables is also known as "multivariate linear regression".
 
 We now introduce notation for equations where we can have any number of input variables.
-$
+
+$$
 x^{(i)}_j=value\ of\ feature\ j\ in\ the\ i^{th}\ training\ example
 \\
 x^{(i)}=the\ input\ (features)\ of\ the\ i^{th}\ training\ example
@@ -248,19 +251,21 @@ x^{(i)}=the\ input\ (features)\ of\ the\ i^{th}\ training\ example
 m=the\ number\ of\ training\ examples
 \\
 n=the\ number\ of\ features
-$$$
-
-*x*(*i*)*j**x*(*i*)*m**n*=value of feature *j* in the *i**t**h* training example=the input (features) of the *i**t**h* training example=the number of training examples=the number of features
+$$
 
 The multivariable form of the hypothesis function accommodating these multiple features is as follows:
 
-$
+$$
 h_\theta (x) = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \theta_3 x_3 + \cdots + \theta_n x_n
-$
-In order to develop intuition about this function, we can think about $\theta_0$ as the basic price of a house, $\theta_1$ as the price per square meter, $\theta_2$ as the price per floor, etc. $x_1$ will be the number of square meters in the house, $x_2$ the number of floors, etc.
+$$
+
+In order to develop intuition about this function, we can think about 
+
+$\theta_0$ as the basic price of a house, $\theta_1$ as the price per square meter, $\theta_2$ as the price per floor, etc. $x_1$ will be the number of square meters in the house, $x_2$ the number of floors, etc.
 
 Using the definition of matrix multiplication, our multivariable hypothesis function can be concisely represented as:
-$
+
+$$
 h_{\theta}(x)=
 \begin{bmatrix}
 \theta_0 & \theta_1 & ... & \theta_n
@@ -272,7 +277,8 @@ x_1 \\
 x_n
 \end{bmatrix}
 =\theta^Tx
-$
+$$
+
 This is a vectorization of our hypothesis function for one training example; see the lessons on vectorization to learn more.
 
 Remark: Note that for convenience reasons in this course we assume $x_{0}^{(i)} =1 \text{ for } (i\in { 1,\dots, m } )$ . This allows us to do matrix operations with theta and x. Hence making the two vectors '$\theta$' and $x^{(i)}$ match each other element-wise (that is, have the same number of elements: n+1).
@@ -282,6 +288,7 @@ Remark: Note that for convenience reasons in this course we assume $x_{0}^{(i)} 
 ### Gradient Descent for Multiple Variables
 
 The gradient descent equation itself is generally the same form; we just have to repeat it for our 'n' features:
+
 $$
 repeat\ until\ convergence: \{\\
 \theta_0 :=\theta_0-\alpha\frac{1}{m}\sum_{i=1}^{m}{(h_\theta(x_i)-y_i)\cdot x_0^{(i)}} \\
@@ -290,12 +297,15 @@ repeat\ until\ convergence: \{\\
 ...
 \}
 $$
+
 In other words:
+
 $$
 repeat\ until\ convergence:\{
 \\
 θ_j:=θ_j−α1m∑i=1m(hθ(x(i))−y(i))⋅x(i)jfor j := 0...n\}
 $$
+
 The following image compares gradient descent with one variable to gradient descent with multiple variables: 
 
 ![]({{ site.url }}/imgs/machine_learning/week2/01_mul_var_gradient.png)
