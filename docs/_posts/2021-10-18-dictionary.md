@@ -17,6 +17,6 @@ categories: notes
 | regression  | n. 回归               |      |
 | converge    | v. 收敛               |      |
 | fabulous    | adj. 极好的           |      |
-|             |                       |      |
-|             |                       |      |
+| heuristic   | adj. n. 启发式        |      |
+| convergence | n. 收敛               |      |
 

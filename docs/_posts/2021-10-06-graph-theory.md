@@ -71,6 +71,9 @@ categories: notes
 
 按路径遍历图的每个节点，且对每个节点只访问一次，最终返回起始节点。
 
+<button onclick="DrawOptimalCycle()">Find optimal hamilton cycle</button>
+<p id="hint">Optimal hamilton cycle's total weight:</p>
+<canvas id="canvas_suboptimal" width="800" height="300" ></canvas>
 
 
 ---
@@ -79,7 +82,7 @@ categories: notes
 
 ### NP完全问题
 
-NP完全问题(NP-C问题)，是世界七大数学难题之一。 NP的英文全称是Non-deterministic Polynomial的问题，即多项式复杂程度的非确定性问题。简单的写法是 NP=P？，问题就在这个问号上，到底是NP等于P，还是NP不等于P。
+NP完全问题(NP-C问题)，是世界七大数学难题之一。 NP的英文全称是Non-deterministic Polynomial的问题，即多项式复杂程度的非确定性问题。简单的写法是 NP=P？。
 
 #### P类问题
 

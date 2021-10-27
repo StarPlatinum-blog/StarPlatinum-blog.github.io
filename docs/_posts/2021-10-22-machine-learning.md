@@ -303,7 +303,7 @@ In other words:
 $$
 repeat\ until\ convergence:\{
 \\
-θ_j:=θ_j−α1m∑i=1m(hθ(x(i))−y(i))⋅x(i)jfor j := 0...n\}
+θ_j:=θ_j−α\frac{1}{m}∑i=1m(hθ(x(i))−y(i))⋅x(i)jfor j := 0...n\}
 $$
 
 The following image compares gradient descent with one variable to gradient descent with multiple variables: 
