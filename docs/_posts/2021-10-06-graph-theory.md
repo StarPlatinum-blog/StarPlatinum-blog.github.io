@@ -63,7 +63,6 @@ categories: notes
 </tr>
 </table>
 
-<script src="{{ site.url }}/js/dijkstra/driver.js"></script>
 
 
 
@@ -72,6 +71,7 @@ categories: notes
 按路径遍历图的每个节点，且对每个节点只访问一次，最终返回起始节点。
 
 <button onclick="DrawOptimalCycle()">Find optimal hamilton cycle</button>
+
 <p id="hint">Optimal hamilton cycle's total weight:</p>
 <canvas id="canvas_suboptimal" width="800" height="300" ></canvas>
 
@@ -102,3 +102,4 @@ NP中的某些问题的复杂性与整个类的复杂性相关联.这些问题�
 
 
 
+<script src="{{ site.url }}/js/dijkstra/driver.js"></script>
