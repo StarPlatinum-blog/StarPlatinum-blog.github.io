@@ -252,6 +252,17 @@ function CreateCircle() {
             DrawText(ctx, weight, w_x, w_y);
         }
     }
+    Circle.DrawLinkTo = function(ctx, next) {
+        var x_start = this.x;
+        var y_start = this.y;
+        var x_end = next.x;
+        var y_end = next.y;
+        ctx.beginPath();
+        ctx.moveTo(x_start, y_start);
+        ctx.lineTo(x_end, y_end);
+        ctx.strokeStyle = "#ff0000";
+        ctx.stroke();
+    }
     return Circle;
 }
 
