@@ -219,7 +219,7 @@ function CreateCircle() {
         ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
         ctx.fill();
         DrawText(ctx, this.txt, this.x, this.y);
-    }
+    };
     Circle.DrawLinkOn = function(ctx) {
         var x_start = this.x;
         var y_start = this.y;

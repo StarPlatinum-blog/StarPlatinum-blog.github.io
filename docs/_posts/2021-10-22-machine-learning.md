@@ -18,7 +18,7 @@ categories: notes
 
 # Coursera Machine Learning
 
-## 1. What is Machine Learning?
+## What is Machine Learning?
 
 Two definitions of Machine Learning are offered. 
 
@@ -143,7 +143,7 @@ The graph above minimizes the cost function as much as possible and consequently
 
 
 
-### Gradient Descent
+## Gradient Descent
 
 So we have our hypothesis function and we have a way of measuring how well it fits into the data. Now we need to estimate the parameters in the hypothesis function. That's where gradient descent comes in.
 
@@ -175,7 +175,9 @@ At each iteration j, one should simultaneously update the parameters $\theta_1, 
 
 ![]({{ site.url }}/imgs/machine_learning/week1/10_gradient_descent.png)
 
-#### 1. intuition
+
+
+### 1. intuition
 
 In this video we explored the scenario where we used one parameter $\theta_1$ and plotted its cost function to implement a gradient descent. Our formula for a single parameter was : 
 
@@ -205,7 +207,7 @@ $$
 
 
 
-### Gradient Descent for Linear Regression
+### 2. Gradient Descent for Linear Regression
 
 When specifically applied to the case of linear regression, a new form of the gradient descent equation can be derived. We can substitute our actual cost function and our actual hypothesis function and modify the equation to :
 
@@ -233,11 +235,7 @@ The ellipses shown above are the contours of a quadratic function. Also shown is
 
 
 
----
-
-
-
-### Multiple Features
+### 3. Multiple Features
 
 Linear regression with multiple variables is also known as "multivariate linear regression".
 
@@ -285,7 +283,7 @@ Remark: Note that for convenience reasons in this course we assume $x_{0}^{(i)} 
 
 
 
-### Gradient Descent for Multiple Variables
+### 4. Gradient Descent for Multiple Variables
 
 The gradient descent equation itself is generally the same form; we just have to repeat it for our 'n' features:
 
@@ -309,3 +307,264 @@ $$
 The following image compares gradient descent with one variable to gradient descent with multiple variables: 
 
 ![]({{ site.url }}/imgs/machine_learning/week2/01_mul_var_gradient.png)
+
+
+
+### 5. Gradient Descent in Practice I - Feature Scaling
+
+如何让梯度下降的更快：把数据范围变成：[-1, 1]
+
+We can speed up gradient descent by having each of our input values in roughly the same range. This is because θ will descend quickly on small ranges and slowly on large ranges, and so will oscillate inefficiently down to the optimum when the variables are very uneven.
+
+The way to prevent this is to modify the ranges of our input variables so that they are all roughly the same. Ideally:
+$$
+−1 ≤ x_{(i)} ≤ 1
+\\
+or
+\\
+−0.5 ≤ x_{(i)} ≤ 0.5
+$$
+These aren't exact requirements; we are only trying to speed things up. The goal is to get all input variables into roughly one of these ranges, give or take a few.
+
+Two techniques to help with this are **feature scaling** and **mean normalization**. 
+
+**Feature scaling** involves dividing the input values by the range (i.e. the maximum value minus the minimum value) of the input variable, resulting in a new range of just 1. 
+
+**Mean normalization** involves subtracting the average value for an input variable from the values for that input variable resulting in a new average value for the input variable of just zero. To implement both of these techniques, adjust your input values as shown in this formula:
+$$
+x_i := \dfrac{x_i - \mu_i}{s_i}
+$$
+Where $μ_i$ is the **average** of all the values for feature (i) and $s_i$ is the **range** of values (max - min), or $s_i$ is the standard deviation.
+
+Note that dividing by the range, or dividing by the standard deviation, give different results. The quizzes in this course use range - the programming exercises use standard deviation.
+
+For example, if $x_i$ represents housing prices with a range of 100 to 2000  and a mean value of 1000, then, $x_i := \dfrac{price-1000}{1900}$.
+
+
+
+### 6. Gradient Descent in Practice II - Learning Rate
+
+**Debugging gradient descent.** Make a plot with *number of iterations* on the x-axis. Now plot the cost function, J(θ) over the number of iterations of gradient descent. If J(θ) ever increases, then you probably need to decrease α.
+
+**Automatic convergence test.** Declare convergence if J(θ) decreases by less than E in one iteration, where E is some small value such as $10^{−3}$. However in practice it's difficult to choose this threshold value.
+
+![]({{ site.url }}/imgs/machine_learning/week2/02_learning_rate.png)
+
+It has been proven that if learning rate α is sufficiently small, then J(θ) will decrease on every iteration.
+
+![]({{ site.url }}/imgs/machine_learning/week2/03_learning_rate.png)
+
+To summarize:
+
+ If $\alpha$ is too small: slow convergence. 
+
+ If $\alpha$ is too large: may not decrease on every iteration and thus may not converge.
+
+
+
+### 7. Features and Polynomial Regression
+
+We can improve our features and the form of our hypothesis function in a couple different ways.
+
+We can **combine** multiple features into one. For example, we can combine $x_1$ and $x_2$ into a new feature $x_3$ by taking $x_1 \cdot x_2$.
+
+#### Polynomial Regression
+
+Our hypothesis function need not be linear (a straight line) if that does not fit the data well.
+
+We can **change the behavior or curve** of our hypothesis function by making it a quadratic, cubic or square root function (or any other form).
+
+For example, if our hypothesis function is $h_\theta(x) = \theta_0 + \theta_1 x_1$ then we can create additional features based on $x_1$, to get the quadratic function $h_\theta(x) = \theta_0 + \theta_1 x_1 + \theta_2 x_1^2$or the cubic function $h_\theta(x) = \theta_0 + \theta_1 x_1 + \theta_2 x_1^2 + \theta_3 x_1^3$
+
+In the cubic version, we have created new features $x_2$ and $x_3$ where $x_2 = x_1^2$ and $x_3 = x_1^3$.
+
+To make it a square root function, we could do: $h_\theta(x) = \theta_0 + \theta_1 x_1 + \theta_2 \sqrt{x_1}$
+
+One important thing to keep in mind is, if you choose your features this way then feature scaling becomes very important.
+
+eg. if $x_1$ has range 1 - 1000 then range of $x_1^2$ becomes 1 - 1000000 and that of $x_1^3$ becomes 1 - 1000000000
+
+
+
+## Normal Equation
+
+Gradient descent gives one way of minimizing J. Let’s discuss a second way of doing so, this time performing the minimization explicitly and without resorting to an iterative algorithm. In the "Normal Equation" method, we will minimize J by explicitly taking its derivatives with respect to the θj ’s, and setting them to zero. This allows us to find the optimum theta without iteration. The normal equation formula is given below: 
+$$
+\theta = (X^T X)^{-1}X^T y
+$$
+There is **no need** to do feature scaling with the normal equation.
+
+The following is a comparison of gradient descent and the normal equation:
+
+| Gradient Descent           | Normal Equation                                |
+| :------------------------- | :--------------------------------------------- |
+| Need to choose alpha       | No need to choose alpha                        |
+| Needs many iterations      | No need to iterate                             |
+| $O (kn^2)$                 | $O (n^3)$, need to calculate inverse of $X^TX$ |
+| Works well when n is large | Slow if n is very large                        |
+
+With the normal equation, computing the inversion has complexity $\mathcal{O}(n^3)$. So if we have a very large number of features, the normal equation will be slow. 
+
+In practice, when n exceeds **10,000** it might be a good time to go from a normal solution to an iterative process(gradient descent).
+
+
+
+### Normal Equation Non-invertibility
+
+When implementing the normal equation in octave we want to use the 'pinv' function rather than 'inv.' The 'pinv' function will give you a value of $\theta$ even if $X^TX$ is not invertible. 
+
+If $X^TX$ is **noninvertible,** the common causes might be having :
+
+-   Redundant features, where two features are very closely related (i.e. they are linearly dependent)
+-   Too many features (e.g. m ≤ n). In this case, delete some features or use "regularization" (to be explained in a later lesson).
+
+Solutions to the above problems include deleting a feature that is linearly dependent with another or deleting one or more features when there are too many features.
+
+
+
+### ex1
+
+记录一下作业无法提交的问题：
+
+在从Coursera下载的`ex1`目录下调用函数`submit`，输入邮箱和Token后报错：
+
+```sh
+[error] submission with curl() was not successful
+!! Submission failed: unexpected error: Error using loadjson (line 73)
+input file does not exist
+!! Please try again later.
+```
+
+报错是在`loadjson`文件的73行：
+
+```matlab
+73: error('input file does not exist');
+```
+
+报错是文件不存在，这个文件的文件名是从函数参数传入的，所以我们看看是谁调用了`loadjson`，然后传入了一个不存在的文件名。梳理一下submit的流程之后，可以看到在`submitWithConfiguration`文件内调用了`loadjson`：
+
+```matlab
+function response = submitParts(conf, email, token, parts)
+  body = makePostBody(conf, email, token, parts);
+  submissionUrl = SubmissionUrl(); % Updated
+  responseBody = getResponse(submissionUrl, body);
+  response = loadjson(responseBody); % Here
+end
+```
+
+也就是说传入的`responseBody`是一个不存在的文件名，打印一下看看到底是什么：
+
+```sh
+curl: /usr/local/MATLAB/R2019b/bin/glnxa64/libcurl.so.4: no version information available (required by curl)
+curl: symbol lookup error: curl: undefined symbol: curl_multi_poll, version CURL_OPENSSL_4
+```
+
+可以看到`curl`是有输出的，但是似乎找不到某个`symbol`，这里看到目录是`/usr/local`开头的，而我的MATLAB是使用普通用户登录的，所以可能是调用`curl`时没有权限。在MATLAB命令行测试一下：
+
+```MATLAB
+system('curl'); % 报错，和上面的报错相同
+system('sudo curl -V'); % 请求用户密码，然后顺利执行
+% 输出：
+curl 7.68.0 (x86_64-pc-linux-gnu) libcurl/7.68.0 OpenSSL/1.1.1f zlib/1.2.11 brotli/1.0.7 libidn2/2.2.0 libpsl/0.21.0 (+libidn2/2.2.0) libssh/0.9.3/openssl/zlib nghttp2/1.40.0 librtmp/2.3
+Release-Date: 2020-01-08
+Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 pop3s rtmp rtsp scp sftp smb smbs smtp smtps telnet tftp 
+Features: AsynchDNS brotli GSS-API HTTP2 HTTPS-proxy IDN IPv6 Kerberos Largefile libz NTLM NTLM_WB PSL SPNEGO SSL TLS-SRP UnixSockets
+```
+
+那么给`submitWithConfiguration`文件中所有调用`curl`的代码加上`sudo`就解决了。
+
+
+
+## Classification
+
+To attempt classification, one method is to use linear regression and map all predictions greater than 0.5 as a 1 and all less than 0.5 as a 0. However, this method doesn't work well because classification is not actually a linear function.
+
+The classification problem is just like the regression problem, except that the values we now want to predict take on only a small number of discrete values. For now, we will focus on the **binary classification** **problem** in which y can take on only two values, 0 and 1. (Most of what we say here will also generalize to the multiple-class case.) For instance, if we are trying to build a spam classifier for email, then $x^{(i)}$ may be some features of a piece of email, and y may be 1 if it is a piece of spam mail, and 0 otherwise. Hence, y∈{0,1}. 0 is also called the negative class, and 1 the positive class, and they are sometimes also denoted by the symbols “-” and “+.” Given $x^{(i)}$, the corresponding $y^{(i)}$ is also called the label for the training example. 
+
+### 1. Hypothesis Representation
+
+We could approach the classification problem ignoring the fact that y is discrete-valued, and use our old linear regression algorithm to try to predict y given x. However, it is easy to construct examples where this method performs very poorly. Intuitively, it also doesn’t make sense for $h_\theta (x)$ to take values larger than 1 or smaller than 0 when we know that y ∈ {0, 1}. To fix this, let’s change the form for our hypotheses $h_\theta (x)$ to satisfy $0 \leq h_\theta (x) \leq 1$. This is accomplished by plugging $\theta^Tx$ into the Logistic Function.
+
+Our new form uses the "Sigmoid Function," also called the "Logistic Function":
+$$
+h_θ(x)=g(θ^Tx)
+\\
+z=θ^Tx
+\\
+g(z)=\frac{1}{1+e^{−z}}
+$$
+
+
+
+
+The following image shows us what the sigmoid function looks like: 
+
+![]({{ site.url }}/imgs/machine_learning/week3/01_Logistic_function.png)
+
+The function g(z), shown here, maps any real number to the (0, 1) interval, making it useful for transforming an arbitrary-valued function into a function better suited for classification.
+
+$h_\theta(x)$ will give us the **probability** that our output is 1. For example, $h_\theta(x)=0.7$ gives us a probability of 70% that our output is 1. Our probability that our prediction is 0 is just the complement of our probability that it is 1 (e.g. if probability that it is 1 is 70%, then the probability that it is 0 is 30%).
+$$
+h_θ(x)=P(y=1|x;θ)=1−P(y=0|x;θ)
+\\
+P(y=0|x;θ)+P(y=1|x;θ)=1
+$$
+
+### 2. Decision Boundary 
+
+In order to get our discrete 0 or 1 classification, we can translate the output of the hypothesis function as follows:
+$$
+h_θ(x)≥0.5→y=1
+\\
+h_θ(x)<0.5→y=0
+$$
+The way our logistic function g behaves is that when its input is greater than or equal to zero, its output is greater than or equal to 0.5:
+$$
+g(z)≥0.5
+\\
+when\ z≥0
+$$
+Remember.
+$$
+z=0,e^0=1⇒g(z)=1/2
+\\
+z→∞,e^{−∞}→0⇒g(z)=1
+\\
+z→−∞,e^∞→∞⇒g(z)=0
+$$
+So if our input to g is $\theta^T$, then that means:
+$$
+hθ(x)=g(θ^Tx)≥0.5
+\\
+when\ θ^Tx≥0
+$$
+From these statements we can now say:
+$$
+θ^Tx≥0⇒y=1
+\\
+θ^Tx<0⇒y=0
+$$
+The **decision boundary** is the line that separates the area where y = 0 and where y = 1. It is created by our hypothesis function.
+
+**Example**:
+$$
+\theta = \begin{bmatrix}
+5 \\
+-1 \\
+0
+\end{bmatrix}
+\\
+y=1\ if\ 5+(−1)x_1+0x_2≥0
+\\
+5−x_1≥0
+\\
+−x_1≥−5
+\\
+x_1≤5
+$$
+In this case, our decision boundary is a straight vertical line placed on the graph where $x_1 = 5$, and everything to the left of that denotes y = 1, while everything to the right denotes y = 0.
+
+Again, the input to the sigmoid function g(z) (e.g. $\theta^TX$) doesn't need to be linear, and could be a function that describes a circle (e.g. $z = \theta_0 + \theta_1 x_1^2 +\theta_2 x_2^2$) or any shape to fit our data.
+
+
+

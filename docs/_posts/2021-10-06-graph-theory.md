@@ -66,14 +66,32 @@ categories: notes
 
 
 
-### 2. Hamilton Cycles
+### 2. Optimal Hamilton Cycles
 
-按路径遍历图的每个节点，且对每个节点只访问一次，最终返回起始节点。
+按路径遍历图的每个节点，且对每个节点只访问一次，最终返回起始节点，这条回路就称为Hamilton cycle。
+
+Optimal Hamilton Cycle就是求一个图中所有Hamilton Cycle中总权值和最小的一条Hamilton Cycle，可以使用Suboptimal算法来得到一条路径权值最小的Hamilton Cycle。
 
 <button onclick="DrawOptimalCycle()">Find optimal hamilton cycle</button>
 
 <p id="hint">Optimal hamilton cycle's total weight:</p>
 <canvas id="canvas_suboptimal" width="800" height="300" ></canvas>
+
+
+
+### 3. Hungarian Algorithm
+
+匈牙利算法，又称为The Munkres Assignment Algorithm，可用来求出一个二分图中的最大匹配或最小权值匹配。
+
+求最小权值匹配：
+
+1.   找到每一行最小的数$x^{(ri)}_{min}$，把该行的每一个数都减去$x^{(ri)}_{min}$；
+2.   找到每一列最小的数$x^{(ci)}_{min}$，把该行的每一个数都减去$x^{(ci)}_{min}$；
+3.   进行了1、2两步后，可以保证每一行每一列都至少有一个0，然后用最少的直线划掉二分图矩阵中的0；
+4.   如果第3步中的直线数 $\ge$ 矩阵的维数，则跳过这一步，否则找出没有被直线划掉的数字中最小的数$x_{min}$，然后用所有没被直线划掉的数字减去$x_{min}$，用直线交叉位置的数加上$x_{min}$；
+5.   在每一行中选取一个`0`，保证同行同列中没有其他`0`被选取，这些选出来的`0`的位置，就是原来矩阵中应当选择的边的权值所在的位置。
+
+
 
 
 ---

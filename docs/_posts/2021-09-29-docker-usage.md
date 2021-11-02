@@ -119,6 +119,15 @@ docker run -dit -p 2222:22 \
 docker exec -it [Container ID] /bin/bash
 ```
 
+选项说明：
+
+1.   `-dit`：让docker容器以能够交互的方式在后台运行；
+2.   `-p host_port:container_port`：将容器的端口映射到宿主机的端口上，eg. `-p 1080:80`就是将容器中程序使用的端口`80`映射到宿主机的`1080`端口，宿主机或者其他机器可以通过`1080`端口和容器通信；
+3.   `--gpus all`：使容器能够使用GPU；
+4.   `-v /tmp/.X11-unix:/tmp/.X11-unix`：共享容器和宿主机的目录，这里共享的是X11 Sever用于与显示端通信的Unix domain socket（maybe），`-v [宿主机目录]:[容器目录]`目录需要使用绝对路径；
+5.   `-e DISPLAY=unix$DISPLAY`：设置环境变量，这里设置的环境变量和`4.`一起是为了使`docker`能够使用`opencv imshow`或者`rviz`等需要GUI的程序；
+6.   `detection:1.0`：使用`detection:1.0`镜像创建容器。
+
 
 
 在docker中使用显卡：
@@ -176,9 +185,11 @@ apt-get install nvidia-container-runtime
 #### 2. 把runtime添加到docker中
 
 ```sh
+## 方法1：手动重启dockerd，附带runtime选项，每次要用显卡时都得操作一遍
 sudo systemctl stop docker
 sudo dockerd --add-runtime=nvidia=/usr/bin/nvidia-container-runtime
 
+## 方法2：修改docker daemon文件，重启dockerd，只需要修改一次，下次就不需要重启dockerd了
 # 修改 /etc/docker/daemon.json，配置默认nvidia运行
 sudo vim /etc/docker/daemon.json 
 # 在daemon.json文件中添加如下内容，如下示意图
