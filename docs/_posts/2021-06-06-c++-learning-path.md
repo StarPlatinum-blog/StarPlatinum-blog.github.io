@@ -321,6 +321,13 @@ int main()
         大概是说编译器找不到基类的`type_info`，而虚析构函数又实现了。
 
     3. 需要将`Foo`声明为纯虚函数或者对基类的`Foo`进行实现才能解决这个错误。
+    
+9. ROS1，roscpp编译的一个坑：
+
+    1. 最近想给一个老项目增加ros收发功能，按照tutorial写了一个不需要引入catkin以及catkin workspace的编译环境，talker listener的tutorial能够顺利编译，但是转换到自己的项目上就一直在`ros::init`就报错，报错是`undefined reference to ros::init`；
+    2. 根据报错信息可以看出是一个`ros`库的链接错误，但是在`CMakeLists.txt`里也已经添加了`target_link_libraries(${target_name} ${catkin_LIBRARIES})`，同时用`message`打印`${catkin_LIBRARIES}`也能正确打印出库的路径；
+    3. 最后发现是旧的CMakeLists里面有一句`add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)`，把这句注释掉就能正常编译了。
+
 
 ----
 

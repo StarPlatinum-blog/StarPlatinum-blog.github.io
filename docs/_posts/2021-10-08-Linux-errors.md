@@ -83,3 +83,14 @@ curl ip.me
 ### 2. 快速复制粘贴终端上的文字
 
 用鼠标选中文字后，单击滚轮。
+
+
+
+### 3. Linux修改图片分辨率的工具：`imagemagick`
+
+`sudo apt install imagemagick`后，使用`mogrify`来修改：
+
+```sh
+mogrify -resize 120x120 -format jpg [image_name]
+```
+
