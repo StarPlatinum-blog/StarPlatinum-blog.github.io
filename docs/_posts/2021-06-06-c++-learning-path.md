@@ -325,8 +325,32 @@ int main()
 9. ROS1，roscpp编译的一个坑：
 
     1. 最近想给一个老项目增加ros收发功能，按照tutorial写了一个不需要引入catkin以及catkin workspace的编译环境，talker listener的tutorial能够顺利编译，但是转换到自己的项目上就一直在`ros::init`就报错，报错是`undefined reference to ros::init`；
+    
     2. 根据报错信息可以看出是一个`ros`库的链接错误，但是在`CMakeLists.txt`里也已经添加了`target_link_libraries(${target_name} ${catkin_LIBRARIES})`，同时用`message`打印`${catkin_LIBRARIES}`也能正确打印出库的路径；
+    
     3. 最后发现是旧的CMakeLists里面有一句`add_definitions(-D_GLIBCXX_USE_CXX11_ABI=0)`，把这句注释掉就能正常编译了。
+    
+    3. >   TODO: 搞清楚上面这句的用途
+    
+10. Muduo Reactor模式与自己写TCP Server的坑：
+
+    1. 这次是想在一个使用Muduo EventLoop和Channel实现了Reactor模式的一个项目中添加一个简单的TCP Server，用来接收数据；
+    2. 这个项目之前使用的是UDP，只需要用UDP socket产生的File Descriptor放进一个Channel，绑定在EventLoop上，注册好ReadCallback，启动EventLoop之后就可以Reactor式地接收UDP数据包了；
+    3. 但是TCP是保持连接的协议，需要一个用来监听的fd和一个用来在连接上接收数据的fd，如果想按上面的UDP一样的逻辑来Reactor式地接收TCP数据包，就需要用这个接收数据的fd来生成Channel，但是**坑就在这里出现了**：当连接到TCP Server的客户端出现断连时，会自动将这个fd关闭，就导致这个Channel无法从它的EventLoop上移除，因为移除需要调用`epoll_ctl`函数来删除fd，而这里会导致报错。
+    4. 而如果想进行断线重连的话就不得不移除这个Channel，然后用新的fd来创建Channel，这种情况下有两种解决方法:
+        1. 放弃Reactor模式，再开一个线程，在里面处理TCP；
+        2. 把`muduo/base/Poller.cpp`里面`Poller::update`函数中的`LDIE << "epoll_ctl error";`改成`assert(errno == 2)`，既忽略fd找不到这个错误，其他错误还是可以正常捕获，这种方法不推荐，但是在你走投无路的时候或许能用？
+    
+11. std::function导致的段错误：
+
+     1. 今天调试时发生的一个段错误，用gdb打印调用栈时发现是`std::function(void ...) operator()`导致的段错误，初步推断是因为某些原因产生了对这个函数对象的悬空指针/引用。
+    
+12. 用运算符`[]`访问`std::unordered_map`中不存在的元素导致的错误：
+
+     1. 当使用运算符`[]`访问不存在元素时，会直接用`second`元素的默认构造函数来创建一个新的元素插入`unordered_map`，所以在用`[]`访问`unordered_map`的元素前应当先用`find`方法判断元素是否存在。
+
+
+
 
 
 ----

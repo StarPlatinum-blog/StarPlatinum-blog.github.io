@@ -30,6 +30,36 @@ categories: notes
 | amortize            | v. 缓冲，摊销                                     |      |
 | advent              | n. 到来                                           |      |
 | fine/coarse-grained | a. 细/粗粒度                                      |      |
+| subject to          | 受限于                                            |      |
+| stringent           | a. 严格的                                         |      |
+| plausibility        | n. 合理性                                         |      |
+| jitter              | n. 抖动                                           |      |
+| longitudinal        | a. 纵向的                                         |      |
+| planar              | n. 平面的                                         |      |
+| polyline            | n. 折线                                           |      |
+| suffice for         | 足以                                              |      |
+| precaution          | n. 预防                                           |      |
+| occlude             | v. 遮挡                                           |      |
+| prescribe           | v. 规定                                           |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
+|                     |                                                   |      |
 |                     |                                                   |      |
 |                     |                                                   |      |
 |                     |                                                   |      |
