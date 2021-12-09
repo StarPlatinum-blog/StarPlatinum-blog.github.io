@@ -5,6 +5,18 @@ date: 21-12-09 08:11:04 +0800
 categories: nots
 ---
 
+<head>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+            inlineMath: [['$','$']]
+            }
+        });
+    </script>
+</head>
+
 ## 1. 并查集(Union Find)
 
 概述：用一个数组存储各个元素之间的连接关系，可以用来快速查找两个元素是否是连通的。
