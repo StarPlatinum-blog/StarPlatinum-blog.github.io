@@ -103,3 +103,36 @@ $O(N^2)$的时间复杂度太慢了。
 
 
 
+## 2. 算法分析
+
+双log画图：N,O(N)轴变量都取log，然后作图
+
+并不是所有的三重循环都是$O(N^3)$，当循环每次对索引的增加为m的倍数时，则这次循环的复杂度是$O(log_mN)$。
+
+一个正确的二分查找的实现：
+
+```java
+public static int binarySearch(int[] a, int key) {
+    int lo = 0, hi = a.length - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if 		(key < a[mid]) hi = mid - 1;
+        else if (key > a[mid]) lo = mid + 1;
+    	else return mid;
+    }
+    return -1;
+}
+```
+
+复杂度表示
+
+| notation  | provides            | example       | shorthand for                        | used to              |
+| --------- | ------------------- | ------------- | ------------------------------------ | -------------------- |
+| Big Theta | 向算法的增长渐进    | $\Theta(N^2)$ | $\frac{1}{2}N^2$,$10N^2$             | 分类算法             |
+| Big Oh    | $\Theta(N^2)$或更小 | $O(N^2)$      | $10N^2$,$100N^2$                     | 找到算法复杂度的上界 |
+| Big Omega | $\Theta(N^2)$或更大 | $\Omega(N^2)$ | $\frac{1}{2}N^2$,$N^5$,$N^3+22NlogN$ | 找到算法复杂度的下界 |
+
+
+
+
+
