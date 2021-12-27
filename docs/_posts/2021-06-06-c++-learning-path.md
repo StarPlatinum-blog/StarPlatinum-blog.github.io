@@ -348,6 +348,20 @@ int main()
 12. 用运算符`[]`访问`std::unordered_map`中不存在的元素导致的错误：
 
      1. 当使用运算符`[]`访问不存在元素时，会直接用`second`元素的默认构造函数来创建一个新的元素插入`unordered_map`，所以在用`[]`访问`unordered_map`的元素前应当先用`find`方法判断元素是否存在。
+    
+13. 记录一个知乎上看到的Debug技巧：
+
+     1. Debug `memory corruption`：利用Google address sanitizer（GAS），可以探查以下问题：
+         -   [Use after free](https://github.com/google/sanitizers/wiki/AddressSanitizerExampleUseAfterFree) (dangling pointer dereference)
+         -   [Heap buffer overflow](https://github.com/google/sanitizers/wiki/AddressSanitizerExampleHeapOutOfBounds)
+         -   [Stack buffer overflow](https://github.com/google/sanitizers/wiki/AddressSanitizerExampleStackOutOfBounds)
+         -   [Global buffer overflow](https://github.com/google/sanitizers/wiki/AddressSanitizerExampleGlobalOutOfBounds)
+         -   [Use after return](https://github.com/google/sanitizers/wiki/AddressSanitizerExampleUseAfterReturn)
+         -   [Use after scope](https://github.com/google/sanitizers/wiki/AddressSanitizerExampleUseAfterScope)
+         -   [Initialization order bugs](https://github.com/google/sanitizers/wiki/AddressSanitizerInitializationOrderFiasco)
+         -   [Memory leaks](https://github.com/google/sanitizers/wiki/AddressSanitizerLeakSanitizer)
+     2. 解决`core dump`：利用`Core Analyzer`工具。
+
 
 
 

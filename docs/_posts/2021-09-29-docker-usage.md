@@ -29,7 +29,6 @@ sudo apt-get install \
 
 ```sh
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
 ```
 
 
@@ -51,7 +50,17 @@ LinuxMint需要查看基于什么版本的Ubuntu，然后替换`$(lsb_release -c
 ```sh
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
 
+
+
+### 1.5 免sudo使用docker
+
+```sh
+sudo groupadd docker
+sudo gpasswd -a ${USER} docker
+sudo systemctl restart docker 
+newgrp docker
 ```
 
 
@@ -81,6 +90,26 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 |                  |                         |                                                              |
 
 
+
+### 2.2 从容器生成镜像
+
+从容器`[ContainerID]`生成名为`RepoName:Tag`的镜像。
+
+```sh
+docker commit [ContainerID] [RepoName:Tag]
+```
+
+导出镜像`ImageID`到文件`filename`：
+
+```sh
+docker save [ImageID] -o [filename] 
+```
+
+从镜像文件导入镜像：
+
+```sh
+docker load -i someimage.tar
+```
 
 
 
@@ -173,7 +202,8 @@ nvidia-smi
 
 ```sh
 curl -s -L https://nvidia.github.io/nvidia-container-runtime/gpgkey | \
-  sudo apt-key add - distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+  sudo apt-key add - 
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 curl -s -L https://nvidia.github.io/nvidia-container-runtime/$distribution/nvidia-container-runtime.list | \
   sudo tee /etc/apt/sources.list.d/nvidia-container-runtime.list
 sudo apt-get update
@@ -194,7 +224,7 @@ sudo dockerd --add-runtime=nvidia=/usr/bin/nvidia-container-runtime
 sudo vim /etc/docker/daemon.json 
 # 在daemon.json文件中添加如下内容，如下示意图
 {
-"default-runtime": "nvidia"
+"default-runtime": "nvidia",
     "runtimes": {
         "nvidia": {
             "path": "/usr/bin/nvidia-container-runtime",

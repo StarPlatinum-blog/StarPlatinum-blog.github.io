@@ -76,9 +76,7 @@ $$
 | root(a)    | 在寻找根节点的同时，调整父节点为祖父节点                     | O(lg*N)         |
 | union(a,b) | 合并两个根节点前，比较两树的大小，然后把较小的树插入较大树的根节点 | O(lg*N)         |
 
-
-
-## Interview Questions
+### Interview Questions
 
 1.   **Social network connectivity.** Given a social network containing *n* members and a log file containing *m* timestamps at which times pairs of members formed friendships, design an algorithm to determine the earliest time at which all members are connected (i.e., every member is a friend of a friend of a friend ... of a friend). Assume that the log file is sorted by timestamp and that friendship is an equivalence relation. The running time of your algorithm should be $m \log n$ or better and use extra space proportional to *n*.
 
@@ -104,6 +102,10 @@ $O(N^2)$的时间复杂度太慢了。
 
 
 ## 2. 算法分析
+
+![order-of-growth classifications](https://algs4.cs.princeton.edu/14analysis/images/classifications.png)
+
+$O(N^2logN)$时间解决3-Sum问题：先对数组进行排序，然后用二重循环遍历数组，然后在最后一个数组中通过二分查找寻找能把遍历前两个数组得到的数消为0的数。
 
 双log画图：N,O(N)轴变量都取log，然后作图
 
@@ -132,7 +134,119 @@ public static int binarySearch(int[] a, int key) {
 | Big Oh    | $\Theta(N^2)$或更小 | $O(N^2)$      | $10N^2$,$100N^2$                     | 找到算法复杂度的上界 |
 | Big Omega | $\Theta(N^2)$或更大 | $\Omega(N^2)$ | $\frac{1}{2}N^2$,$N^5$,$N^3+22NlogN$ | 找到算法复杂度的下界 |
 
+### Interview Questions
+
+1.   用平方项时间解决3-Sum问题：在O(N)时间内解决a[i] + a[j] = x问题。（LeetCode 3-Sum）
+2.   搜索双音数组：双音数组（bitonic array）是指一个由一个升序排列的数组和一个降序排列数组相邻组成的数组，已知一个数组，判断它是双音数组。
+     -   标准解法：最差情况下使用~$3lgN$次比较；
+     -   加分解法：最差情况下使用~$2lgN$次比较；
+
+
+
+## 3. 栈与队列
+
+课程内容：
+
+1.   使用单链表和可变数组实现稳健的（robust）栈和队列；
+2.   介绍JAVA的泛型和迭代器；
+3.   栈和队列的常见应用，例如解析算术表达式、仿真排队系统；
+
+模块化编程：分离接口与实现。
+
+>   Don't use a library until you understand its API.
+>
+>   (In this course) Can't use a library until we've implemented it in class.
+
+JAVA默认禁止声明泛型数组，需要使用泛型数组时可以使用如下的声明：
+
+```java
+s = (Item[]) new Object[capacity]; // 把Object数组强制转换为Item数组
+```
+
+泛型栈：
+
+```java
+public class Stack<Item>
+{
+    private Node first = null;
+    private class Node
+    {
+        Item item;
+        Node next;
+    }
+
+    public boolean isEmpty()
+    { return first == null; }
+    public void push(Item item)
+    {
+        Node oldfirst = first;
+        first = new Node();
+        first.item = item;
+        first.next = oldfirst;
+    }
+    public Item pop()
+    {
+        Item item = first.item;
+        first = first.next;
+        return item;
+    }
+}
+```
+
+为什么JAVA不支持泛型数组？
+
+>   Quote: Arrays of generic types are not allowed because they're not sound. The problem is due to the interaction of Java arrays, which are not statically sound but are dynamically checked, with generics, which are statically sound and not dynamically checked.
 
 
 
 
+
+-   一般来说可以用一个`栈`来去除递归，把它变为迭代
+
+Dijkstra双栈算法：通过一个数字栈和一个符号栈，求算术表达式的值，具体步骤为：
+
+1.   逐个扫描表达式：
+     1.   遇到`(`，忽略；
+     2.   遇到数字`i`，压入数字栈中；
+     3.   遇到`)`，从数字栈中`pop`两个数字，从符号栈中`pop`一个符号，然后求它们的值；
+
+用除二取余法把10进制数转为2进制：
+
+```java
+int n = 50;
+
+Stack<Integer> stack = new Stack<Integer>();
+while (n > 0) {
+    stack.push(n % 2);
+    n = n / 2;
+}
+
+for (int digit : stack) {
+    StdOut.print(digit);
+}
+
+StdOut.println();
+```
+
+### Interview Questions
+
+2.   Stack with max：给栈加入一个`return-the-maximum operation`。
+
+     用两个栈来存储，一个栈按照顺序来存储数据，另一个栈按照数据大小存储，栈顶为最大数（具体方法为：当要存一个数字到这个栈时，逐个比较栈顶元素和它的大小，如果它更大，就把它入栈，如果它更小，就pop栈顶元素，然后继续比较下一个元素）
+
+### Homeworks
+
+实现泛型双端队列：`deque`（读作deck）
+
+实现泛型随机队列：`randomized queue`，随机队列和普通队列的唯一区别是，随机队列在删除元素时是按均匀分布随机删除。
+
+
+
+## 4. 元素排序
+
+课程内容：
+
+1.   介绍排序问题和JAVA的兼容接口；
+2.   学习选择排序和插入排序，以及它们的变体；
+3.   学习两种均匀打乱数组的算法；
+4.   排序算法的应用：利用Graham scan算法计算凸包（convex hull）
