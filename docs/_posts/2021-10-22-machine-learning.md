@@ -317,6 +317,7 @@ The following image compares gradient descent with one variable to gradient desc
 We can speed up gradient descent by having each of our input values in roughly the same range. This is because θ will descend quickly on small ranges and slowly on large ranges, and so will oscillate inefficiently down to the optimum when the variables are very uneven.
 
 The way to prevent this is to modify the ranges of our input variables so that they are all roughly the same. Ideally:
+
 $$
 −1 ≤ x_{(i)} ≤ 1
 \\
@@ -324,6 +325,7 @@ or
 \\
 −0.5 ≤ x_{(i)} ≤ 0.5
 $$
+
 These aren't exact requirements; we are only trying to speed things up. The goal is to get all input variables into roughly one of these ranges, give or take a few.
 
 Two techniques to help with this are **feature scaling** and **mean normalization**. 
@@ -331,9 +333,11 @@ Two techniques to help with this are **feature scaling** and **mean normalizatio
 **Feature scaling** involves dividing the input values by the range (i.e. the maximum value minus the minimum value) of the input variable, resulting in a new range of just 1. 
 
 **Mean normalization** involves subtracting the average value for an input variable from the values for that input variable resulting in a new average value for the input variable of just zero. To implement both of these techniques, adjust your input values as shown in this formula:
+
 $$
 x_i := \dfrac{x_i - \mu_i}{s_i}
 $$
+
 Where $μ_i$ is the **average** of all the values for feature (i) and $s_i$ is the **range** of values (max - min), or $s_i$ is the standard deviation.
 
 Note that dividing by the range, or dividing by the standard deviation, give different results. The quizzes in this course use range - the programming exercises use standard deviation.
@@ -389,9 +393,11 @@ eg. if $x_1$ has range 1 - 1000 then range of $x_1^2$ becomes 1 - 1000000 and th
 ## Normal Equation
 
 Gradient descent gives one way of minimizing J. Let’s discuss a second way of doing so, this time performing the minimization explicitly and without resorting to an iterative algorithm. In the "Normal Equation" method, we will minimize J by explicitly taking its derivatives with respect to the θj ’s, and setting them to zero. This allows us to find the optimum theta without iteration. The normal equation formula is given below: 
+
 $$
 \theta = (X^T X)^{-1}X^T y
 $$
+
 There is **no need** to do feature scaling with the normal equation.
 
 The following is a comparison of gradient descent and the normal equation:
@@ -486,6 +492,7 @@ The classification problem is just like the regression problem, except that the 
 We could approach the classification problem ignoring the fact that y is discrete-valued, and use our old linear regression algorithm to try to predict y given x. However, it is easy to construct examples where this method performs very poorly. Intuitively, it also doesn’t make sense for $h_\theta (x)$ to take values larger than 1 or smaller than 0 when we know that y ∈ {0, 1}. To fix this, let’s change the form for our hypotheses $h_\theta (x)$ to satisfy $0 \leq h_\theta (x) \leq 1$. This is accomplished by plugging $\theta^Tx$ into the Logistic Function.
 
 Our new form uses the "Sigmoid Function," also called the "Logistic Function":
+
 $$
 h_θ(x)=g(θ^Tx)
 \\
@@ -504,6 +511,7 @@ The following image shows us what the sigmoid function looks like:
 The function g(z), shown here, maps any real number to the (0, 1) interval, making it useful for transforming an arbitrary-valued function into a function better suited for classification.
 
 $h_\theta(x)$ will give us the **probability** that our output is 1. For example, $h_\theta(x)=0.7$ gives us a probability of 70% that our output is 1. Our probability that our prediction is 0 is just the complement of our probability that it is 1 (e.g. if probability that it is 1 is 70%, then the probability that it is 0 is 30%).
+
 $$
 h_θ(x)=P(y=1|x;θ)=1−P(y=0|x;θ)
 \\
@@ -513,18 +521,23 @@ $$
 ### 2. Decision Boundary 
 
 In order to get our discrete 0 or 1 classification, we can translate the output of the hypothesis function as follows:
+
 $$
 h_θ(x)≥0.5→y=1
 \\
 h_θ(x)<0.5→y=0
 $$
+
 The way our logistic function g behaves is that when its input is greater than or equal to zero, its output is greater than or equal to 0.5:
+
 $$
 g(z)≥0.5
 \\
 when\ z≥0
 $$
+
 Remember.
+
 $$
 z=0,e^0=1⇒g(z)=1/2
 \\
@@ -532,21 +545,27 @@ z→∞,e^{−∞}→0⇒g(z)=1
 \\
 z→−∞,e^∞→∞⇒g(z)=0
 $$
+
 So if our input to g is $\theta^T$, then that means:
+
 $$
 hθ(x)=g(θ^Tx)≥0.5
 \\
 when\ θ^Tx≥0
 $$
+
 From these statements we can now say:
+
 $$
 θ^Tx≥0⇒y=1
 \\
 θ^Tx<0⇒y=0
 $$
+
 The **decision boundary** is the line that separates the area where y = 0 and where y = 1. It is created by our hypothesis function.
 
 **Example**:
+
 $$
 \theta = \begin{bmatrix}
 5 \\
@@ -562,6 +581,7 @@ y=1\ if\ 5+(−1)x_1+0x_2≥0
 \\
 x_1≤5
 $$
+
 In this case, our decision boundary is a straight vertical line placed on the graph where $x_1 = 5$, and everything to the left of that denotes y = 1, while everything to the right denotes y = 0.
 
 Again, the input to the sigmoid function g(z) (e.g. $\theta^TX$) doesn't need to be linear, and could be a function that describes a circle (e.g. $z = \theta_0 + \theta_1 x_1^2 +\theta_2 x_2^2$) or any shape to fit our data.
