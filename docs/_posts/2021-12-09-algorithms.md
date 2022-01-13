@@ -236,9 +236,19 @@ StdOut.println();
 
 ### Homeworks
 
-实现泛型双端队列：`deque`（读作deck）
+#### 实现泛型双端队列：`deque`（读作deck）
 
-实现泛型随机队列：`randomized queue`，随机队列和普通队列的唯一区别是，随机队列在删除元素时是按均匀分布随机删除。
+ez work
+
+#### 实现泛型随机队列：`randomized queue`，随机队列和普通队列的唯一区别是，随机队列在删除元素时是按均匀分布随机删除。
+
+实现`constant time`的出队：
+
+1.   使用动态数组来存储元素；
+     -   动态数组维护：
+         1.   入队时根据数组长度进行容量扩充，当前数组空间不够时将数组长度扩大两倍；
+         2.   出队时根据数组长度进行容量缩减，当数组实际占用不到数组的$\frac{1}{4}$时，将数组容量缩小为原来的$\frac{1}{2}$；
+2.   出队时，随机选取数组下标，然后将下标位置的元素置为数组的最后一个元素交换，最后把这个元素置为`null`，确保在GC时会被清除。（JAVA实现，C++实现时可以利用智能指针或者手动delete）
 
 
 
@@ -246,7 +256,64 @@ StdOut.println();
 
 课程内容：
 
-1.   介绍排序问题和JAVA的兼容接口；
+1.   介绍排序问题和JAVA的接口；
 2.   学习选择排序和插入排序，以及它们的变体；
 3.   学习两种均匀打乱数组的算法；
 4.   排序算法的应用：利用Graham scan算法计算凸包（convex hull）
+
+### 4.1  JAVA接口
+
+`Insertion.sort()`：对一个数组进行升序排序，其中：
+
+-   数字直接按照大小排序；
+-   英文按照字母表排序；
+
+`sort()`通过调用数组类型的`compareTo`方法来实现排序中的大小比较，`compareTo`方法实现了`java`的`Comparable`接口。
+
+#### 辅助函数
+
+1.   `boolean less(Comparable v, Comparable w)`，用于判断`v`是否小于`w`，`v < w`时返回true。
+
+```java
+private static boolean less(Comparable v, Comparable w)
+{ return v.compareTo(w) < 0; }
+```
+
+2.   `void exch(Comparable[] a, int i, int j)`，交换数组a中的第`i`个和第`j`个元素。
+
+```java
+private static void exch(Comparable[] a, int i, int j)
+{
+    Comparable swap = a[i];
+    a[i] = a[j];
+    a[j] = swap;
+}
+```
+
+3.   `boolean isSorted(Comparable[] a)`，判断数组a是否已经被升序排序。
+
+```java
+private static boolean isSorted(Comparable[] a)
+{
+    for (int i = 1; i < a.length; i++)
+        if (less(a[i], a[i-1])) return false;
+    return true;
+}
+```
+
+### 4.2 选择排序
+
+从第一个元素开始，寻找最小的数，然后和数组中的第一个数交换位置，直到最后一个元素。
+
+### 4.3 插入排序
+
+从第一个元素开始，逐个读取下一个元素，然后逐个与自己的前一个元素进行比较，直到
+
+#### 逆序数
+
+定义：一个数组中顺序不正确的元素对数
+
+如果一个数组中的逆序数$\leq \mathbf{c}N$，则它是一个部分排序数组。例如：
+
+1.   一个已排好序的数组后在连接一个未排序的数组；
+2.   一个数组里只有10个数未排序；

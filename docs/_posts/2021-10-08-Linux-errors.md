@@ -69,6 +69,15 @@ sudo apt-get install python3-pyaudio
 
 
 
+### 3. Ubuntu 安装SSH server
+
+```sh
+sudo apt-get update
+sudo apt-get install openssh-server
+```
+
+
+
 ## Tricks
 
 ### 1. 命令行获取本机对其他公网机器的公网IP
@@ -92,5 +101,23 @@ curl ip.me
 
 ```sh
 mogrify -resize 120x120 -format jpg [image_name]
+```
+
+
+
+### 4. Shell Script遍历数组
+
+```shell
+#!/bin/bash
+a=(192.168.1.1 192.168.1.2 192.168.1.3)
+# 方法1：foreach 遍历
+for ip in ${a[@]}; do
+	echo $ip
+done
+
+# 方法2：下标遍历
+for i in $(seq 0 $((${#a[@]} - 1))); do
+	echo ${a[$i]}
+done
 ```
 
