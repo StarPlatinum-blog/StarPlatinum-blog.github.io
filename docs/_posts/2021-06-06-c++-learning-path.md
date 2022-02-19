@@ -230,7 +230,122 @@ int main()
 }
 ```
 
+##### C++11 时间库
 
+`chrono`库是C++11中的时间库，里面有一系列有关时间操作的函数和类可以使用，可以在[C++ reference](https://en.cppreference.com/w/cpp/chrono)中查看。下面记录几个常用的代码：
+
+1.   获取当前时间戳（微秒）
+
+     ```c++
+     #include <chrono>
+     using std::chrono::steady_clock;
+     using std::chrono::microseconds;
+     using std::chrono::time_point_cast;
+     
+     int main() {
+         auto t = time_point_cast<microseconds>(steady_clock::now());
+         long long timestamp = t.time_since_epoch().count();
+         return 0;
+     }
+     ```
+     
+2.   计时（秒）
+
+     ```c++
+     #include <chrono>
+      
+     long fibonacci(unsigned n)
+     {
+         if (n < 2) return n;
+         return fibonacci(n-1) + fibonacci(n-2);
+     }
+      
+     int main()
+     {
+         auto start = std::chrono::steady_clock::now();
+         fibonacci(42);
+         auto end = std::chrono::steady_clock::now();
+         std::chrono::duration<double> elapsed_seconds = end-start;
+         double elapse_time = elapsed_seconds.count();
+         return 0;
+     }
+     ```
+
+3.   计时（微秒）
+
+     ```c++
+     #include <chrono>
+      
+     long fibonacci(unsigned n)
+     {
+         if (n < 2) return n;
+         return fibonacci(n-1) + fibonacci(n-2);
+     }
+      
+     int main()
+     {
+         auto start = std::chrono::steady_clock::now();
+         fibonacci(42);
+         auto end = std::chrono::steady_clock::now();
+         auto elapsed_seconds = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
+         double elapse_time = elapsed_seconds.count();
+         return 0;
+     }
+     ```
+     
+
+##### 右值引用
+
+[番茄汁汁的博客](https://www.cnblogs.com/likaiming/p/9045642.html)感觉讲的很不错。
+
+C++11新增的特性。
+
+左值：能够获取地址，能够出现在赋值语句左边对其赋值。但是`const int& i = 10`这样的常引用无法赋值。
+
+右值：无法获取地址的对象。如字面值、函数返回值、lambda表达式等。但不代表它不可改变，当定义了右值的右值引用时即可改变右值。
+
+左值引用是一个变量的别名，右值引用可以看做是一个临时变量的别名。临时变量在内存中存储的情况和一个具名的变量（局部）是类似的，都是存在栈上。
+
+###### 二者的一些特性：
+
+-   一个普通的左值引用无法对一个右值进行引用，同时它也无法绑定到一个右值引用上
+
+    ```c++
+    int &i = 10;	// 错误 10是一个字面值，无法绑定
+    // ---
+    int a = 10;
+    int &i = a;		// 正确 左值引用绑定在一个左值上
+    int &&ii = i;	// 错误 右值引用无法绑定一个左值
+    int &&ii = 10;	// 正确 右值引用绑定在一个右值上
+    ```
+
+-   const左值引用可以绑定一个右值
+
+    ```cpp
+    const int &i = 10;	// 正确 const引用绑定一个右值
+    int &&ii = i;		// 错误 const引用仍然是一个左值引用
+    ```
+
+-   右值引用可以赋值给左值引用
+
+    ```cpp
+    int &&ii = 10;
+    int &i = ii;	// 正确 左值引用可以绑定任何值
+    ```
+
+-   可以通过`std::move`来将一个左值转换成右值，但是转换后，必须保证除了复制和销毁以外，不能进行其他任何操作。
+
+    ```cpp
+    #include <utility>
+    ...
+    int a = 10;
+    int &i = a;
+    int &&ii = std::move(i);
+    ```
+
+###### 右值引用模板类型推断
+
+引用折叠：用于处理产生引用的引用时发生的问题，右值引用的右值引用`X&& &&`会折叠成一个右值引用，其他所有的引用的引用的类型都会折叠为一个左值引用
 
 
 
@@ -361,8 +476,35 @@ int main()
          -   [Initialization order bugs](https://github.com/google/sanitizers/wiki/AddressSanitizerInitializationOrderFiasco)
          -   [Memory leaks](https://github.com/google/sanitizers/wiki/AddressSanitizerLeakSanitizer)
      2. 解决`core dump`：利用`Core Analyzer`工具。
+    
+14. 遇到一个`boost`编译无法通过的问题，程序使用`CMake`编译，`boost`安装正确且`cmake`没有报错，`make`时遇到下面的问题：
 
+     ```sh
+     /usr/bin/ld: /tmp/ccoF821Q.o: in function `__static_initialization_and_destruction_0(int, int)':
+     test.cc:(.text+0x2ce): undefined reference to `boost::system::generic_category()'
+     /usr/bin/ld: test.cc:(.text+0x2da): undefined reference to `boost::system::generic_category()'
+     /usr/bin/ld: test.cc:(.text+0x2e6): undefined reference to `boost::system::system_category()'
+     collect2: error: ld returned 1 exit status
+     ```
 
+     搜了很多答案都说在`ld.so.conf`添加了`boost`的路径或者添加编译选项`-lboost_system`，但是我实际上已经添加了这个路径，仍然不能编译通过。最终在stackoverflow上面搜到了问题的解决方法[[Vadim Berman的答案](https://stackoverflow.com/questions/9723793/undefined-reference-to-boostsystemsystem-category-when-compiling/50146757#50146757)]：
+
+     ```cmake
+     # 添加编译选项
+     -DBOOST_ERROR_CODE_HEADER_ONLY
+     # 或者在CMakeLists.txt里面添加
+     add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
+     ```
+
+     `原因分析`：根据[Marc Glisse]()的回答：
+
+     >   Linking with a library that defines the missing symbol (`-lboost_system`) is the obvious solution,but in the particular case of Boost.System, a misfeature in the original design makes it use `boost::system::generic_category()` and `boost::system::system_category()` needlessly.
+     >
+     >   ...
+     >
+     >   Starting from Boost 1.66 and [this commit](https://github.com/boostorg/system/commit/829a1320a7bef3ade74d6691fdcfe72e0b6917e9), this behavior is now the default, so hopefully fewer and fewer users should need this answe
+
+     可见，在`boost`版本1.66以后，不使用上面两个函数的行为就是一个默认的宏定义了。由于使用了一些旧版本的软件，我的电脑上还配置了旧版本的`boost 1.60`动态库，可以看出这个问题就是由旧版本的`boost`动态库和新版本的头文件导致的。
 
 
 
