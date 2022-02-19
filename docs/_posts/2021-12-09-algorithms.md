@@ -242,7 +242,7 @@ ez work
      2. 出队时根据数组长度进行容量缩减，当数组实际占用不到数组的$\frac{1}{4}$时，将数组容量缩小为原来的$\frac{1}{2}$；
 2. 出队时，随机选取数组下标，然后将下标位置的元素置为数组的最后一个元素交换，最后把这个元素置为`null`，确保在GC时会被清除。（JAVA实现，C++实现时可以利用智能指针或者手动delete）
 
-## 4. 元素排序
+## 4. 基础排序
 
 课程内容：
 
@@ -311,3 +311,55 @@ private static boolean isSorted(Comparable[] a)
 ### 4.4 希尔排序(shell sort)
 
 和插入排序类似，但每次和自己之前的第`h`个元素比较，称为`h-sort`，h取由大到小（最小的h一定是1），做多次排序，最终得到一个结果。
+
+### Interview Questions
+
+1. **Intersection of two sets.** Given two arrays a[] and b[], each containing n distinct 2D points in the plane, design a subquadratic algorithm to count the number of points that are contained both in array a[] and array b[].
+   
+   *Hint:* shellsort (or any other subquadratic sort).
+
+2. **Permutation.** Given two integer arrays of size n, design a subquadratic algorithm to determine whether one is a permutation of the other. That is, do they contain exactly the same entries but, possibly, in a different order.
+   
+   *Hint:* sort both arrays.
+
+3. **Dutch national flag.** Given an array of n buckets, each containing a red, white, or blue pebble, sort them by color. The allowed operations are:
+   
+   - swap(i,j): swap the pebble in bucket i with the pebble in bucket j.
+   
+   - color(i): determine the color of the pebble in bucket i.
+   
+   The performance requirements are as follows:
+   
+   - At most n calls to color().
+   
+   - At most n calls to swap().
+   
+   - Constant extra space.
+   
+   *Hint:* 3-way partitioning.
+
+## 5. 归并排序
+
+### 5.1 JAVA实现
+
+JAVA实现merge：
+
+```java
+private static void merge(Comparable[] a, Comparable[] aux, int lo, int mid, int hi) {                
+    assert isSorted(a, lo, mid); // precondition: a[lo..mid] sorted
+    assert isSorted(a, mid+1, hi); // precondition: a[mid+1..hi] sorted
+    for (int k = lo; k <= hi; k++)
+        aux[k] = a[k];
+    int i = lo, j = mid+1;
+    for (int k = lo; k <= hi; k++)
+    {
+        if (i > mid) a[k] = aux[j++];
+        else if (j > hi) a[k] = aux[i++];
+        else if (less(aux[j], aux[i])) a[k] = aux[j++];
+        else a[k] = aux[i++];
+    }
+    assert isSorted(a, lo, hi); // postcondition: a[lo..hi] sorted
+}
+```
+
+使用`java-alg4`编译时，需要添加`-ea`选项，启用`assertion`，也可以通过`-da`禁用`assertion`。
