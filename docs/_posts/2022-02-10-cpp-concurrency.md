@@ -5,6 +5,8 @@ date:   2022-02-10 11:27:12 +0800
 categories: note 
 ---
 
+[TOC]
+
 # C++ 并发编程
 
 ## 1. 线程管控
@@ -87,19 +89,290 @@ int AddToList(int value) {
 }	// guard析构，解锁
 ```
 
-一般互斥和受保护的数据会一起组成一个类，
+一般互斥和受保护的数据会一起组成一个类，可以清楚的表明它们互相联系。但是如果类的成员函数返回了数据的指针或是引用，就会导致数据能够随时被其他函数访问，这样就不能保证数据的访问时在互斥的保护下进行的。
 
-
-
-
+因此在使用互斥时，要注意：**谨慎设计接口，保证受保护的数据是在互斥锁定后才被访问**
 
 #### 2.2.2 组织和编排代码以保护共享数据
 
+使用互斥并不能完美的保护共享数据，如果有一个成员函数返回了共享数据的引用或者指针，并且在解锁后再使用数据，这就会导致共享数据失去保护。
+
+```c++
+class SomeData {
+ private:
+    int a;
+    std::string b;
+ public:
+    explicit SomeData(int a, std::string b): a(a), b(b) {}
+
+    void Print() {
+        std::cout << a << " " << b << std::endl;
+    }
+};
+
+class DataWrapper {
+ private:
+    SomeData data;
+    std::mutex m;
+ public:
+    explicit DataWrapper(SomeData d) :data(d) {}
+
+    template<typename FuncT_>
+    void ProcessData(FuncT_ func) {
+        std::lock_guard<std::mutex> lock(m);
+        func(data);
+    }
+
+    void GetDataAddr() {
+        std::cout << &data << std::endl;
+    }
+};
+
+SomeData *unprotected = nullptr;
+void MaliciousFunc(SomeData &protected_data) {
+    unprotected = &protected_data;
+}
+
+void MaliciousThread(SomeData *data_ptr) {
+    std::cout << "Get protected data outside the mutex:\n";
+    data_ptr->Print();
+}
+```
+
+上面代码中的`MaliciousFunc`就是一个例子，它通过引用传参获取了受保护数据的指针，然后在`lock_guard`的范围之外使用保护数据。
+
+这是使用互斥保护共享数据的常见错误，在代码中：
+
+- 不得向锁所在的作用域之外传递指针和引用，指向受保护的共享数据。
+
 #### 2.2.3 发现接口固有的条件竞争
+
+有时即使使用互斥保护了所有访问共享数据的代码，依然会产生条件竞争，这就可能是数据结构的接口导致的。
+
+以`std::stack`作为例子，它的成员函数支持以下三个操作：`push top pop`，分别用于将数据压入栈中、取得栈顶的元素和将栈顶元素弹出。还可以通过成员函数：`empty size`，判断栈是否为空、获得栈中的数据量。
+
+```c++
+stack<int> s;
+if (!s.empty()) {
+    const int value = s.top();
+    s.pop();
+    do_something(value);
+}
+```
+
+上面的代码在多线程中存在两处条件竞争：
+
+##### 1. empty判断失效
+
+假设栈中只含有一个元素：
+
+| 线程1                          | 线程2                          |
+| ------------------------------ | ------------------------------ |
+| s.empty() == false，进入if语句 |                                |
+|                                | s.empty() == false，进入if语句 |
+|                                | const int value = s.top();     |
+|                                | s.pop();                       |
+| const int value = s.top();     |                                |
+
+线程1和线程2同时通过了判断语句，但是因为栈中仅有一个元素，线程2在调用`s.pop`时就弹出了该元素，在线程1调用`s.top`获取栈顶元素时，就会因为栈空产生段错误。
+
+##### 2. top与pop的条件竞争
+
+| 线程1                      | 线程2                      |
+| -------------------------- | -------------------------- |
+| const int value = s.top(); |                            |
+|                            | const int value = s.top(); |
+|                            | s.pop()                    |
+| s.pop()                    |                            |
+
+上面两个线程同时取了栈顶的同一个元素，并且分别调用了`pop`方法两次，这就会导致栈顶以下的元素还未被访问就被弹出。
+
+那是不是把`pop`和`top`合并成同一个函数就可以解决问题了呢？
+
+> Tom Cargill提出的异常安全问题：
+>
+> 假设pop函数返回栈顶元素的值，同时将其从栈上移除。隐患是：只有在栈被改动后，弹出的元素才返回给调用者。
+>
+> 如果在返回后的拷贝过程中，元素类型的构造函数抛出异常，就会导致数据既未被拷贝到目标变量中，在栈上也不复存在。
+
+有以下几种方法可以消除条件竞争：
+
+1. 传入引用
+   - Detail: TODO
+2. 提供不抛出异常的拷贝构造函数，或不抛出异常的移动构造函数
+   - Detail: TODO
+3. 返回指针，指向弹出的元素
+   - Detail: TODO
+4. 结合方法1、2，或结合方法1、3
+   - Detail: TODO
+
+下面的代码实现了一个线程安全的栈容器：
+
+```c++
+template<typename T>
+class threadsafe_stack {
+ private:
+    std::stack<T> data;
+    mutable std::mutex m;
+
+ public:
+    threadsafe_stack() {}
+    threadsafe_stack(const threadsafe_stack& other) {
+        std::lock_guard<std::mutex> m_lock(other.m);
+        data = other.data;
+    }
+    threadsafe_stack& operator=(const threadsafe_stack& other) = delete;
+
+    void push(T new_value) {
+        std::lock_guard<std::mutex> m_lock(m);
+        data.push(std::move(new_value));
+    }
+
+    std::shared_ptr<T> pop() {
+        std::scoped_lock m_lock(m);     // try C++17 scoped_lock
+        if (data.empty()) throw empty_stack();
+        std::shared_ptr<T> const res(std::make_shared<T>(data.top()));
+        data.pop();
+        return res;
+    }
+
+    void pop(T &value) {
+        std::scoped_lock m_lock(m);
+        if (data.empty()) throw empty_stack();
+        value = data.top();
+        data.pop();
+    }
+
+    bool empty() const {
+        std::scoped_lock m_lock(m);
+        return data.empty();
+    }
+};
+```
+
+
 
 #### 2.2.4 死锁：问题和解决方法
 
+死锁：两个线程都需要同时锁定两个互斥才能进行某些操作，但它们分别锁住了一个互斥，都等着给另一个互斥加锁。双方都在阻塞等待对方释放锁，导致后面的程序无法运行。
+
+防范死锁的一般建议：按固定顺序对多个互斥加锁。
+
+- 棘手场景：`swap(T a, T b)`用于交换两个对象，如果在`swap`函数内率先对第一个参数加锁，再对第二个参数加锁，虽然看似是按固定顺序加锁，但在下面的情况就会导致死锁：
+- 线程1调用了`swap(a, b);`并对对象a加了锁，此时线程2调用`swap(b, a)`并对b加了锁，这就导致了死锁。
+
+此时就可以使用标准库函数`std::lock`，同时对两个互斥加锁：
+
+```c++
+void swap(T& a, T& b) {
+    if (a == b) return;
+    std::lock(a.m, b.m); // 假定 m 是T类型的互斥量
+    std::lock_guard<std::mutex> lock_a(a.m, std::adopt_lock);
+    std::lock_guard<std::mutex> lock_b(b.m, std::adopt_lock);
+    swap_data_(a, b);
+}
+```
+
+`std::adopt_lock`是`std::lock_guard`和`std::unique_lock`的构造函数选项。意为不在构造lock对象时对互斥进行加锁，同时假定互斥已经被当前线程加锁。
+
+`std::defer_lock`是另一个选项，它表示不在构造lock对象时对互斥进行加锁，同时假定互斥没有被加锁。
+
+`std::lock`能够保证互斥量同时被全部锁定，或者在抛出异常时同时被解锁。
+
+如果使用C++17，则可以利用`std::scoped_lock`来对多个互斥加锁
+
+```c++
+void swap(T& a, T& b) {
+    if (a == b) return;
+    // 模板参数推导，等同于：std::scoped_lock<std::mutex, std::mutex> s_lock(a.m, b.m);
+    std::scoped_lock s_lock(a.m, b.m); 
+    swap_data_(a, b);
+}
+```
+
+
+
 #### 2.2.5 防范死锁的补充准则
+
+1. 避免嵌套锁
+   - TODO
+2. 一旦持锁，就避免调用用户提供的程序接口
+   - TODO
+3. 依从固定顺序获取锁
+   - TODO
+4. 按层级加锁
+   - TODO
+5. 将以上四个准则推广到锁之外
+   - 死锁并不一定是加锁操作导致的，创建线程时也可能导致死锁。
+
+下面是一个简单的层级互斥实现：
+
+```c++ 
+namespace locklock {
+
+class hierarchy_violated_exception : public std::exception {
+    const char* what() const noexcept(true) override {
+        return "mutex hierarchy violated";
+    }
+};
+
+class hierarchical_mutex {
+ private:
+    std::mutex internal_mutex_;
+    const uint32_t hierarchy_value;
+    uint32_t previous_hierarchy_value;
+    static thread_local uint32_t this_thread_hierarchy_value;
+
+    void CheckForHierarchyViolation() noexcept(true) {
+        if (this_thread_hierarchy_value <= hierarchy_value) {
+            throw hierarchy_violated_exception();
+        }
+    }
+
+    void UpdateHierarchyValue() {
+        previous_hierarchy_value = this_thread_hierarchy_value;
+        this_thread_hierarchy_value = hierarchy_value;
+    }
+
+ public:
+    explicit hierarchical_mutex(uint32_t value) :
+            hierarchy_value(value),
+            previous_hierarchy_value(0) {}
+
+    void lock() {
+        CheckForHierarchyViolation();
+        internal_mutex_.lock();
+        UpdateHierarchyValue();
+    }
+
+    void unlock() {
+        if (this_thread_hierarchy_value != hierarchy_value) {
+             throw hierarchy_violated_exception();
+        }
+        this_thread_hierarchy_value = previous_hierarchy_value;
+        internal_mutex_.unlock();
+    }
+
+    bool try_lock() {
+        CheckForHierarchyViolation();
+        if (!internal_mutex_.try_lock()) {
+            return false;
+        }
+        UpdateHierarchyValue();
+        return true;
+    }
+};
+
+thread_local uint32_t 
+    hierarchical_mutex::this_thread_hierarchy_value(
+        std::numeric_limits<uint32_t>::max());
+    
+} // namespace locklock
+```
+
+上面的层级互斥实现了`lock unlock try_lock`接口，所以可以和`std::lock_guard`结合使用。
+
+`try_lock`：当互斥已经被其他线程持有，则直接返回false，表示加锁失败，不进入阻塞。
 
 #### 2.2.6 运用std::unique_ptr<>灵活加锁
 

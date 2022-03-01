@@ -347,6 +347,27 @@ C++11新增的特性。
 
 引用折叠：用于处理产生引用的引用时发生的问题，右值引用的右值引用`X&& &&`会折叠成一个右值引用，其他所有的引用的引用的类型都会折叠为一个左值引用
 
+##### CMakeLists编写
+
+定义函数：
+
+```cmake
+function(func_name argument1 argument2)
+	do_something(${argument1}/${argument2})
+endfunction(func_name)
+```
+
+在编译后执行自定义指令：
+
+```cmake
+add_custom_command(
+	TARGET target_name
+	POST_BUILD 
+	COMMENT "print something after build"
+	COMMAND ${command_to_execute}
+)
+```
+
 
 
 ## CPP Errors
