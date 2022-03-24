@@ -368,6 +368,40 @@ add_custom_command(
 )
 ```
 
+##### std::addressof()
+
+memory头文件，可以获得重载了取地址符`&`的对象地址。例如：
+
+```c++
+#include <iostream>
+#include <memory>
+
+struct unreferenceable {
+  int x;
+  unreferenceable* operator&() { return nullptr; }
+};
+
+void print (unreferenceable* m) {
+  if (m) std::cout << m->x << '\n';
+  else std::cout << "[null pointer]\n";
+}
+
+int main () {
+  void(*pfn)(unreferenceable*) = std::addressof(print);
+
+  unreferenceable val {10};
+  unreferenceable* foo = &val;					// 只获取了nullptr
+  unreferenceable* bar = std::addressof(val);	// 获取到了对象地址
+
+  (*pfn)(foo);   // prints [null pointer]
+  (*pfn)(bar);   // prints 10
+
+  return 0;
+}
+```
+
+类unreferenceable重载了取地址符，并且总是返回空指针，就只能通过`std::addressof`获取它的对象的地址。
+
 
 
 ## CPP Errors

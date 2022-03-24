@@ -9,35 +9,35 @@ categories: note
 
 # C++ 并发编程
 
-## 1. 线程管控
+## 2. 线程管控
 
-### 1.1 基本线程管控
+### 2.1 基本线程管控
 
-#### 1.1.1 发起线程
+#### 2.1.1 发起线程
 
-#### 1.1.2 等待线程完成
+#### 2.1.2 等待线程完成
 
-#### 1.1.3 出现异常的情况下等待
+#### 2.1.3 出现异常的情况下等待
 
-#### 1.1.4 在后台运行线程
+#### 2.1.4 在后台运行线程
 
-### 1.2 向线程传递参数
+### 2.2 向线程传递参数
 
-### 1.3 移交线程归属权
+### 2.3 移交线程归属权
 
-### 1.4 在运行时选择线程数量
+### 2.4 在运行时选择线程数量
 
-### 1.5 识别线程
+### 2.5 识别线程
 
 
 
-## 2. 在线程间共享数据
+## 3. 在线程间共享数据
 
-### 2.1 线程间共享数据的问题
+### 3.1 线程间共享数据的问题
 
 不变量：针对某一特定数据的断言，需要保持为真实值的一个量。例如链表元素的个数就是一个不变量。
 
-#### 2.1.1 条件竞争
+#### 3.1.1 条件竞争
 
 `定义`：在并发编程中，操作由两个或多个线程负责，他们争先让线程执行各自的操作，而结果取决于它们执行的次序。
 
@@ -45,7 +45,7 @@ categories: note
 
 恶性条件竞争：典型场景：完成一项操作需要改动两份或多份数据。
 
-#### 2.1.2 防止恶性条件竞争
+#### 3.1.2 防止恶性条件竞争
 
 方法：
 
@@ -59,11 +59,11 @@ categories: note
 
    若别的线程改动了数据，导致提交无法完整执行，则事务重新开始。
 
-### 2.2 用互斥保护共享数据
+### 3.2 用互斥保护共享数据
 
 互斥（mutex: mutual exclusion）：标记访问受保护数据结构的代码，令各线程在其上相互排斥，只要由线程在运行标记的代码，任何别的线程想要访问同一块数据就必须等待。
 
-#### 2.2.1 在C++中使用互斥
+#### 3.2.1 在C++中使用互斥
 
 在c++中使用`std::mutex`类来创建互斥，调用成员函数`lock`来对代码加锁，调用`unlock`来解锁：
 
@@ -93,7 +93,35 @@ int AddToList(int value) {
 
 因此在使用互斥时，要注意：**谨慎设计接口，保证受保护的数据是在互斥锁定后才被访问**
 
-#### 2.2.2 组织和编排代码以保护共享数据
+下面是`lock_guard`在GCC 9的实现，非常的简洁，在构造函数中对互斥进行加锁，在析构函数对互斥进行解锁，实现RAII。同时删除了拷贝构造函数和拷贝赋值操作符，使`lock_guard`只能进行引用。
+
+```C++
+template<typename _Mutex>
+class lock_guard
+{
+    public:
+    typedef _Mutex mutex_type;
+
+    explicit lock_guard(mutex_type& __m) : _M_device(__m)
+    { _M_device.lock(); }
+
+    lock_guard(mutex_type& __m, adopt_lock_t) noexcept : _M_device(__m)
+    { } // calling thread owns mutex
+
+    ~lock_guard()
+    { _M_device.unlock(); }
+
+    lock_guard(const lock_guard&) = delete;
+    lock_guard& operator=(const lock_guard&) = delete;
+
+    private:
+    mutex_type&  _M_device;
+};
+```
+
+
+
+#### 3.2.2 组织和编排代码以保护共享数据
 
 使用互斥并不能完美的保护共享数据，如果有一个成员函数返回了共享数据的引用或者指针，并且在解锁后再使用数据，这就会导致共享数据失去保护。
 
@@ -145,7 +173,7 @@ void MaliciousThread(SomeData *data_ptr) {
 
 - 不得向锁所在的作用域之外传递指针和引用，指向受保护的共享数据。
 
-#### 2.2.3 发现接口固有的条件竞争
+#### 3.2.3 发现接口固有的条件竞争
 
 有时即使使用互斥保护了所有访问共享数据的代码，依然会产生条件竞争，这就可能是数据结构的接口导致的。
 
@@ -252,7 +280,7 @@ class threadsafe_stack {
 
 
 
-#### 2.2.4 死锁：问题和解决方法
+#### 3.2.4 死锁：问题和解决方法
 
 死锁：两个线程都需要同时锁定两个互斥才能进行某些操作，但它们分别锁住了一个互斥，都等着给另一个互斥加锁。双方都在阻塞等待对方释放锁，导致后面的程序无法运行。
 
@@ -292,7 +320,7 @@ void swap(T& a, T& b) {
 
 
 
-#### 2.2.5 防范死锁的补充准则
+#### 3.2.5 防范死锁的补充准则
 
 1. 避免嵌套锁
    - TODO
@@ -374,17 +402,159 @@ thread_local uint32_t
 
 `try_lock`：当互斥已经被其他线程持有，则直接返回false，表示加锁失败，不进入阻塞。
 
-#### 2.2.6 运用std::unique_ptr<>灵活加锁
+#### 3.2.6 运用std::unique_lock<>灵活加锁
 
-#### 2.2.7 在不同作用域之间转移互斥归属权
+`std::unique_lock<>`对象并不一定占有与之关联的互斥，同时可以提前对关联的互斥进行解锁，而不是像`lock_guard`只能在析构时解锁。
 
-#### 2.2.8 按适合的粒度加锁
+它的构造函数除了传入互斥外，还可以传入一个额外的参数用于指示是否锁住互斥，它有以下可能取值：
 
-### 2.3 保护共享数据的其他工具
+- `std::adopt_lock`：表示将互斥交给这个锁来管理，锁会假定互斥已经被锁定，因此不会在构造锁的时候对互斥进行加锁，但可以利用锁的RAII特性帮助解锁互斥；
+- `std::defer_lock`：表示在构造`unique_lock`时不对互斥进行加锁，在未来通过`unique_lock`的`lock()`或`try_lock()`方法进行加锁。
+- `std::try_to_lock`：表示在构造锁时调用互斥的`try_lock()`方法对其进行加锁。
+- 如果不传入第二个参数，互斥会在锁构造完成后被锁定。
 
-#### 2.3.1 在初始化过程中保护共享数据
+由于需要存储锁管理的互斥当前的状态，所以`unique_lock`占用的内存比`lock_guard`稍大（多一个bool）。因此在`lock_guard`满足需求的情况下优先使用它进行加锁，在需要更高的灵活性时再使用`unique_lock`。
 
-#### 2.3.2 保护较少更新的数据结构
+#### 3.2.7 在不同作用域之间转移互斥归属权
 
-#### 2.3.3 递归加锁
+当程序需要：
+
+1. 根据当前保存的某种状态对互斥加锁；
+2. 对互斥加锁的时机由传入的参数决定；
+
+这两种情况下需要锁能够转移，而`unique_lock`就是一种可以移动不可复制的锁，十分适合此类场景。
+
+转移锁的归属权可以让函数在加锁后进行一些操作，再将锁返回给调用者，在同一个锁的保护下进行后面的操作。
+
+#### 3.2.8 按适合的粒度加锁
+
+
+
+### 3.3 保护共享数据的其他工具
+
+#### 3.3.1 在初始化过程中保护共享数据
+
+#### 3.3.2 保护较少更新的数据结构
+
+#### 3.3.3 递归加锁
+
+
+
+
+
+## 4. 并发操作的同步
+
+### 4.4 运用同步操作简化代码
+
+#### 4.4.1 利用future进行函数式编程
+
+##### 1. 函数式编程风格的快速排序
+
+记录几个以前不常用的stl函数：
+
+1. 分割函数：`std::partition`，接收两个迭代器，表示要进行分割的区域，第三个参数为一个可调用对象，用于在分割时将列表元素与分割点元素进行比较。
+
+    函数定义
+    
+    ```c++
+    template <class BidirectionalIterator, class UnaryPredicate>
+      BidirectionalIterator partition (BidirectionalIterator first,
+                                       BidirectionalIterator last,
+                                       UnaryPredicate pred) {
+      while (first!=last) {
+        while (pred(*first)) {
+          ++first;
+          if (first==last) return first;
+        }
+        do {
+          --last;
+          if (first==last) return first;
+        } while (!pred(*last));
+        swap (*first,*last);
+        ++first;
+      }
+      return first;
+    }
+    ```
+    
+    ```c++
+    #include <algorithm>
+    std::partition(x.begin(), x.end(), [&](const T& t){ return t < pivot; })
+    ```
+    
+2. list间进行元素交换：`splice`
+
+    函数签名：
+
+    ```c++
+    // entire list (1)	
+    void splice (const_iterator position, list& x);
+    void splice (const_iterator position, list&& x);
+    // single element (2)	
+    void splice (const_iterator position, list& x, const_iterator i);
+    void splice (const_iterator position, list&& x, const_iterator i);
+    // element range (3)	
+    void splice (const_iterator position, list& x,
+                 const_iterator first, const_iterator last);
+    void splice (const_iterator position, list&& x,
+                 const_iterator first, const_iterator last);
+    ```
+
+    (1)将list x的所有元素都转移到调用`splice`的链表的position迭代器之前的位置，插入后`position`迭代器会指向插入元素的后一个。
+
+3. lambda表达式
+
+   标准格式：
+   
+   ```c++
+   [ captures ] ( params ) specs_requires(optional) { body }
+   ```
+   
+   `captures`表示lambda表达式如何获取当前生命周期内的变量：
+   
+   - `=`表示通过拷贝的方式获取所有变量；
+   - `&`表示通过引用的方式获取所有变量；
+   - `x`表示通过拷贝的方式获取变量x；
+   - `&x`表示通过引用的方式获取变量x；
+   
+   ```c++
+   A a; // A is constructed
+   {
+       auto print_a = [=]() {	// A is copied
+           cout << a << endl;	// print a
+       };
+       print_a();
+   }	// A is destructed
+   {
+       auto print_a= [&]() {	// get a by ref
+           cout << a << endl; 	// print a
+       };
+       print_a();
+   }
+   {
+       auto print_a = [a]() {	// A is copied
+           cout << a << endl;	// print a
+       };
+       print_a();
+   }
+   {
+       auto print_a = [&a]() {	// get a by ref
+           cout << a << endl;	// print a
+       };
+       print_a();
+   }
+   ```
+
+函数式编程的快速排序：
+
+```c++
+```
+
+
+
+​    
+
+
+
+
 
