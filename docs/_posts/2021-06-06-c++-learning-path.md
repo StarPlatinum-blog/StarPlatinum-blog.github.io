@@ -402,6 +402,43 @@ int main () {
 
 类unreferenceable重载了取地址符，并且总是返回空指针，就只能通过`std::addressof`获取它的对象的地址。
 
+##### GCC \_\_attribute\_\_ 关键字
+
+> GCC使用\_\_attribute\_\_关键字来描述函数，变量和数据类型的属性，用于编译器对源代码的优化。
+
+在函数前加`__attribute__ ((...))`即可使用。
+
+记录几种使用方法：
+
+1. `__attribute__ ((noreturn))`：函数不会返回
+2. `__attribute__ ((alias("nickname")))`：设置函数别名为nickname
+3. `__attribute__ ((constructor))`：函数在进入main函数前执行
+4. `__attribute__ ((destructor))`：函数在main函数返回后执行
+5. `__attribute__ ((noinline))`：函数不能作为inline函数
+6. `__attribute__ ((section("specials”)))`：将函数放入`specials`段中，而不是text段
+
+##### new (std::nothrow)
+
+使用`new`进行内存分配时，当内存分配失败时返回的指针不为nullptr，同时会抛出异常。
+
+```c++
+char *p = new char[size];
+if (!p) { // 即使分配失败，p也不是nullptr，这里的检查无用
+    return;
+}
+```
+
+使用`new (std::nothrow)`可以让内存分配失败时不抛出异常，同时返回一个nullptr。
+
+```c++
+char *p = new (std::nothrow) char[size];
+if (!p) { // 分配失败时，p确实为nullptr
+    return;
+}
+```
+
+
+
 
 
 ## CPP Errors
