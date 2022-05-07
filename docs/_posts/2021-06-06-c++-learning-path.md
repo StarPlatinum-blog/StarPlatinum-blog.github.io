@@ -230,6 +230,46 @@ int main()
 }
 ```
 
+> from cppreference
+
+```c++
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <map>
+#include <random>
+#include <cmath>
+ 
+int main()
+{
+    // Seed with a real random value, if available
+    std::random_device r;
+ 
+    // Choose a random mean between 1 and 6
+    std::default_random_engine e1(r());
+    std::uniform_int_distribution<int> uniform_dist(1, 6);
+    int mean = uniform_dist(e1);
+    std::cout << "Randomly-chosen mean: " << mean << '\n';
+ 
+    // Generate a normal distribution around that mean
+    std::seed_seq seed2{r(), r(), r(), r(), r(), r(), r(), r()}; 
+    std::mt19937 e2(seed2);
+    std::normal_distribution<> normal_dist(mean, 2);
+ 
+    std::map<int, int> hist;
+    for (int n = 0; n < 10000; ++n) {
+        ++hist[std::round(normal_dist(e2))];
+    }
+    std::cout << "Normal distribution around " << mean << ":\n";
+    for (auto p : hist) {
+        std::cout << std::fixed << std::setprecision(1) << std::setw(2)
+                  << p.first << ' ' << std::string(p.second/200, '*') << '\n';
+    }
+}
+```
+
+
+
 ##### C++11 时间库
 
 `chrono`库是C++11中的时间库，里面有一系列有关时间操作的函数和类可以使用，可以在[C++ reference](https://en.cppreference.com/w/cpp/chrono)中查看。下面记录几个常用的代码：
@@ -599,6 +639,10 @@ if (!p) { // 分配失败时，p确实为nullptr
      可见，在`boost`版本1.66以后，不使用上面两个函数的行为就是一个默认的宏定义了。由于使用了一些旧版本的软件，我的电脑上还配置了旧版本的`boost 1.60`动态库，可以看出这个问题就是由旧版本的`boost`动态库和新版本的头文件导致的。
 
 
+
+## Refs
+
+1. [一个可以可视化执行代码的网站，很不错](https://pythontutor.com/)
 
 
 ----
