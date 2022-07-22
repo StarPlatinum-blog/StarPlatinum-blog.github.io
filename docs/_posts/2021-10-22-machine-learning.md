@@ -586,5 +586,3 @@ In this case, our decision boundary is a straight vertical line placed on the gr
 
 Again, the input to the sigmoid function g(z) (e.g. $\theta^TX$) doesn't need to be linear, and could be a function that describes a circle (e.g. $z = \theta_0 + \theta_1 x_1^2 +\theta_2 x_2^2$) or any shape to fit our data.
 
-
-

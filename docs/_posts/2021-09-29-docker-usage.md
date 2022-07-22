@@ -58,7 +58,7 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 
 ```sh
 sudo groupadd docker
-sudo gpasswd -a ${USER} docker
+sudo gpasswd -a [USER Name] docker
 sudo systemctl restart docker 
 newgrp docker
 ```
