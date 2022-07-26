@@ -11,7 +11,7 @@ categories: note
 
 ## 1. 模型训练过程
 
-![](D:\1tongji\10blog\StarPlatinum-blog.github.io\docs\imgs\deeplearning\2\training_guide.png)
+![]({{ site.url }}\imgs\deeplearning\2\training_guide.png)
 
 首先检测训练集的Loss，如果Loss较大，则可能有两个原因：
 
@@ -60,7 +60,7 @@ $$
 
 在马鞍点上：沿着Hessian的负的特征值（如果想要取最小值）对应的特征向量的方向对参数进行更新，即可得到更小Loss的参数。
 
-![](../imgs/deeplearning/2/minimum_ratio.png)
+![]({{ site.url }}/imgs/deeplearning/2/minimum_ratio.png)
 
 上图中*Minimum ratio*表示为正的特征值数量和全部特征值数量的比值，如果全部特征值都是正的，就表示达到了最小值，可以看出实际上能达到局部最小值的时刻并不多。
 
