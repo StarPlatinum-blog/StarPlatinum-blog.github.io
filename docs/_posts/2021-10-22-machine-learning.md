@@ -15,7 +15,6 @@ categories: notes
         });
     </script>
 </head>
-
 # Coursera Machine Learning
 
 ## What is Machine Learning?
