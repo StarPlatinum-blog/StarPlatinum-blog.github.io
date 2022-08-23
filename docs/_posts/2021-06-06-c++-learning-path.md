@@ -457,7 +457,7 @@ int main () {
 5. `__attribute__ ((noinline))`：函数不能作为inline函数
 6. `__attribute__ ((section("specials”)))`：将函数放入`specials`段中，而不是text段
 
-##### new (std::nothrow)
+##### new (std::nothrow) 
 
 使用`new`进行内存分配时，当内存分配失败时返回的指针不为nullptr，同时会抛出异常。
 
@@ -638,7 +638,32 @@ if (!p) { // 分配失败时，p确实为nullptr
 
      可见，在`boost`版本1.66以后，不使用上面两个函数的行为就是一个默认的宏定义了。由于使用了一些旧版本的软件，我的电脑上还配置了旧版本的`boost 1.60`动态库，可以看出这个问题就是由旧版本的`boost`动态库和新版本的头文件导致的。
 
+---
 
+### Effective C++中的一些值得记录的建议
+
+#### 02 尽量以const，enum，inline替换`#define`
+
+原因：`#define`定义的宏在编译器处是不可见的，发生错误时更难以调试。
+
+在新的C++中，也可以使用`constexpr`来进行替换。
+
+`the enum hack`：通过`enum`在类中定义常量；
+
+```c++
+class GamePlayer {
+private:
+    enum { NumTurns = 5 };
+	int scores[NumTurns];
+};
+```
+
+#### 03 尽可能使用const
+
+1. 对变量使用const可以避免一些不必要的错误：将`==`误写为`=`导致的赋值，此时如果变量是const的，就在编译期能避免问题的出现；
+2. const成员函数：
+   1. bitwise constness：狭义的const，也是C++编译器所遵循的，只要成员函数不改变成员变量，就认为它是是const的；
+   2. logical constness：逻辑上的const，认为const成员函数能够改变一部分对象的成员，同时不应该传出指向对象内部的handle，以防止const的对象在别处被更改。                                        
 
 ## Refs
 
