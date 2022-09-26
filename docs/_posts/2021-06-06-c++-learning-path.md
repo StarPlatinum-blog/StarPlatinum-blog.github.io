@@ -334,6 +334,37 @@ int main()
      ```
      
 
+4. RAII微秒计时类
+
+   ```c++
+   // timer.hpp
+   #pragma once
+   #include <chrono>
+   
+   namespace tools {
+   
+   class Timer {
+    private:
+     std::chrono::time_point<std::chrono::steady_clock> start_;
+     int64_t &duration_us_;
+   
+    public:
+     Timer(int64_t& dur): duration_us_(dur) {
+       start_ = std::chrono::steady_clock::now();
+     }
+   
+     ~Timer() {
+       auto end = std::chrono::steady_clock::now();
+       duration_us_ = std::chrono::duration_cast<std::chrono::microseconds>(end - start_).count();
+     }
+   };
+   
+   }  // namespace tools
+   
+   ```
+
+   
+
 ##### 右值引用
 
 [番茄汁汁的博客](https://www.cnblogs.com/likaiming/p/9045642.html)感觉讲的很不错。
