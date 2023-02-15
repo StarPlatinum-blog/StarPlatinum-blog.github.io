@@ -130,3 +130,26 @@ ssh -t $USERNAME@$IP "sudo docker images"
 ```
 
 加上`-t`之后就可以交互地输入密码了，但是如果想同时对多台服务器进行命令执行，还是不方便。还是对用户配置一些不需要输入密码即可`sudo`权限执行的命令比较好。
+
+### 6. 使用命令行选择WIFI连接
+
+使用`nmcli`工具进行，Ubuntu20.04自带`nmcli`
+
+列出所有无线热点：
+
+```
+sudo nmcli dev wifi
+```
+
+链接指定热点：
+
+```
+sudo nmcli dev wifi connect [WIFI SSID]
+```
+
+其它命令可以使用`help`查询
+
+```
+nmcli dev wifi help
+```
+
