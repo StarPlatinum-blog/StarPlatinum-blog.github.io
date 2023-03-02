@@ -15,7 +15,6 @@ categories: notes
         });
     </script>
 </head>
-
 # Coursera Machine Learning
 
 ## What is Machine Learning?
@@ -585,6 +584,4 @@ $$
 In this case, our decision boundary is a straight vertical line placed on the graph where $x_1 = 5$, and everything to the left of that denotes y = 1, while everything to the right denotes y = 0.
 
 Again, the input to the sigmoid function g(z) (e.g. $\theta^TX$) doesn't need to be linear, and could be a function that describes a circle (e.g. $z = \theta_0 + \theta_1 x_1^2 +\theta_2 x_2^2$) or any shape to fit our data.
-
-
 

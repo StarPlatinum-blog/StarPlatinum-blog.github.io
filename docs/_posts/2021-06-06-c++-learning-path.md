@@ -230,6 +230,46 @@ int main()
 }
 ```
 
+> from cppreference
+
+```c++
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <map>
+#include <random>
+#include <cmath>
+ 
+int main()
+{
+    // Seed with a real random value, if available
+    std::random_device r;
+ 
+    // Choose a random mean between 1 and 6
+    std::default_random_engine e1(r());
+    std::uniform_int_distribution<int> uniform_dist(1, 6);
+    int mean = uniform_dist(e1);
+    std::cout << "Randomly-chosen mean: " << mean << '\n';
+ 
+    // Generate a normal distribution around that mean
+    std::seed_seq seed2{r(), r(), r(), r(), r(), r(), r(), r()}; 
+    std::mt19937 e2(seed2);
+    std::normal_distribution<> normal_dist(mean, 2);
+ 
+    std::map<int, int> hist;
+    for (int n = 0; n < 10000; ++n) {
+        ++hist[std::round(normal_dist(e2))];
+    }
+    std::cout << "Normal distribution around " << mean << ":\n";
+    for (auto p : hist) {
+        std::cout << std::fixed << std::setprecision(1) << std::setw(2)
+                  << p.first << ' ' << std::string(p.second/200, '*') << '\n';
+    }
+}
+```
+
+
+
 ##### C++11 时间库
 
 `chrono`库是C++11中的时间库，里面有一系列有关时间操作的函数和类可以使用，可以在[C++ reference](https://en.cppreference.com/w/cpp/chrono)中查看。下面记录几个常用的代码：
@@ -294,6 +334,37 @@ int main()
      ```
      
 
+4. RAII微秒计时类
+
+   ```c++
+   // timer.hpp
+   #pragma once
+   #include <chrono>
+   
+   namespace tools {
+   
+   class Timer {
+    private:
+     std::chrono::time_point<std::chrono::steady_clock> start_;
+     int64_t &duration_us_;
+   
+    public:
+     Timer(int64_t& dur): duration_us_(dur) {
+       start_ = std::chrono::steady_clock::now();
+     }
+   
+     ~Timer() {
+       auto end = std::chrono::steady_clock::now();
+       duration_us_ = std::chrono::duration_cast<std::chrono::microseconds>(end - start_).count();
+     }
+   };
+   
+   }  // namespace tools
+   
+   ```
+
+   
+
 ##### 右值引用
 
 [番茄汁汁的博客](https://www.cnblogs.com/likaiming/p/9045642.html)感觉讲的很不错。
@@ -346,6 +417,98 @@ C++11新增的特性。
 ###### 右值引用模板类型推断
 
 引用折叠：用于处理产生引用的引用时发生的问题，右值引用的右值引用`X&& &&`会折叠成一个右值引用，其他所有的引用的引用的类型都会折叠为一个左值引用
+
+##### CMakeLists编写
+
+定义函数：
+
+```cmake
+function(func_name argument1 argument2)
+	do_something(${argument1}/${argument2})
+endfunction(func_name)
+```
+
+在编译后执行自定义指令：
+
+```cmake
+add_custom_command(
+	TARGET target_name
+	POST_BUILD 
+	COMMENT "print something after build"
+	COMMAND ${command_to_execute}
+)
+```
+
+##### std::addressof()
+
+memory头文件，可以获得重载了取地址符`&`的对象地址。例如：
+
+```c++
+#include <iostream>
+#include <memory>
+
+struct unreferenceable {
+  int x;
+  unreferenceable* operator&() { return nullptr; }
+};
+
+void print (unreferenceable* m) {
+  if (m) std::cout << m->x << '\n';
+  else std::cout << "[null pointer]\n";
+}
+
+int main () {
+  void(*pfn)(unreferenceable*) = std::addressof(print);
+
+  unreferenceable val {10};
+  unreferenceable* foo = &val;					// 只获取了nullptr
+  unreferenceable* bar = std::addressof(val);	// 获取到了对象地址
+
+  (*pfn)(foo);   // prints [null pointer]
+  (*pfn)(bar);   // prints 10
+
+  return 0;
+}
+```
+
+类unreferenceable重载了取地址符，并且总是返回空指针，就只能通过`std::addressof`获取它的对象的地址。
+
+##### GCC \_\_attribute\_\_ 关键字
+
+> GCC使用\_\_attribute\_\_关键字来描述函数，变量和数据类型的属性，用于编译器对源代码的优化。
+
+在函数前加`__attribute__ ((...))`即可使用。
+
+记录几种使用方法：
+
+1. `__attribute__ ((noreturn))`：函数不会返回
+2. `__attribute__ ((alias("nickname")))`：设置函数别名为nickname
+3. `__attribute__ ((constructor))`：函数在进入main函数前执行
+4. `__attribute__ ((destructor))`：函数在main函数返回后执行
+5. `__attribute__ ((noinline))`：函数不能作为inline函数
+6. `__attribute__ ((section("specials”)))`：将函数放入`specials`段中，而不是text段
+
+##### new (std::nothrow) 
+
+使用`new`进行内存分配时，当内存分配失败时返回的指针不为nullptr，同时会抛出异常。
+
+```c++
+char *p = new char[size];
+if (!p) { // 即使分配失败，p也不是nullptr，这里的检查无用
+    return;
+}
+```
+
+使用`new (std::nothrow)`可以让内存分配失败时不抛出异常，同时返回一个nullptr。
+
+```c++
+char *p = new (std::nothrow) char[size];
+if (!p) { // 分配失败时，p确实为nullptr
+    return;
+}
+```
+
+
 
 
 
@@ -506,7 +669,36 @@ C++11新增的特性。
 
      可见，在`boost`版本1.66以后，不使用上面两个函数的行为就是一个默认的宏定义了。由于使用了一些旧版本的软件，我的电脑上还配置了旧版本的`boost 1.60`动态库，可以看出这个问题就是由旧版本的`boost`动态库和新版本的头文件导致的。
 
+---
 
+### Effective C++中的一些值得记录的建议
+
+#### 02 尽量以const，enum，inline替换`#define`
+
+原因：`#define`定义的宏在编译器处是不可见的，发生错误时更难以调试。
+
+在新的C++中，也可以使用`constexpr`来进行替换。
+
+`the enum hack`：通过`enum`在类中定义常量；
+
+```c++
+class GamePlayer {
+private:
+    enum { NumTurns = 5 };
+	int scores[NumTurns];
+};
+```
+
+#### 03 尽可能使用const
+
+1. 对变量使用const可以避免一些不必要的错误：将`==`误写为`=`导致的赋值，此时如果变量是const的，就在编译期能避免问题的出现；
+2. const成员函数：
+   1. bitwise constness：狭义的const，也是C++编译器所遵循的，只要成员函数不改变成员变量，就认为它是是const的；
+   2. logical constness：逻辑上的const，认为const成员函数能够改变一部分对象的成员，同时不应该传出指向对象内部的handle，以防止const的对象在别处被更改。                                        
+
+## Refs
+
+1. [一个可以可视化执行代码的网站，很不错](https://pythontutor.com/)
 
 
 ----
