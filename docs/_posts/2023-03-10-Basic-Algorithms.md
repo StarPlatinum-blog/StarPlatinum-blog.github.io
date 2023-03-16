@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  'C++ Learning Path'
+title:  'Basic Algorithms && Data Structures'
 date:   2023-03-10 19:30:00 +0800
 categories: notes
 ---
@@ -89,11 +89,12 @@ void Adjust(vector<int>& vec, int len, int index) {
     }
 }
 
-void HeapSort(vector<int>& vec, int size) {
-    for (int i = size/2-1; i >= 0; --i) {
-        Adjust(vec, size, i);
+void HeapSort(vector<int>& vec) {
+    int n = vec.size();
+    for (int i = n / 2 - 1; i >= 0; --i) {
+        Adjust(vec, n, i);
     }
-    for (int i = size-1; i >= 1; --i) {
+    for (int i = n - 1; i >= 1; --i) {
         swap(vec[0], vec[i]);
         Adjust(vec, i, 0);
     }
@@ -170,6 +171,7 @@ private:
             heapify_up(parent_idx);
         }
     }
+
     void heapify_down(int idx) {
         int left_idx = idx*2 + 1, right_idx = idx*2 + 2;
         int max_idx = idx;
