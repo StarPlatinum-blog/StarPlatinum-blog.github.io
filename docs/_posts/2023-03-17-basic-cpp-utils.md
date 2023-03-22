@@ -90,6 +90,54 @@ void ThreadPool::Stop() {
 
 ```
 
+### 1.2 LRU Cache
+
+This LRU Cache can be tested on https://leetcode.cn/problems/OrIXps/
+
+```c++
+class LRUCache {
+private:
+    using Item = pair<int, int>;
+    unordered_map<int, list<Item>::iterator> map_;
+    list<Item> cont_;
+    int cap_;
+
+    void moveToFront(int key) {
+        auto it = map_[key];
+        cont_.push_front({it->first, it->second});
+        cont_.erase(it);
+        map_[key] = cont_.begin();
+    }
+
+public:
+    LRUCache(int capacity): cap_(capacity) {}
+    
+    int get(int key) {
+        if (map_.count(key) > 0) {
+            moveToFront(key);
+            return cont_.front().second;
+        } else {
+            return -1;
+        }
+    }
+    
+    void put(int key, int value) {
+        if (map_.count(key) > 0) {
+            moveToFront(key);
+            cont_.front().second = value;
+        } else {
+            cont_.push_front({key, value});
+            map_[key] = cont_.begin();
+        }
+        if (cont_.size() > cap_) {
+            auto item = cont_.back();
+            map_.erase(item.first);
+            cont_.pop_back();
+        }
+    }
+};
+```
+
 ## 2. Design Patterns
 
 ### 2.1 Singleton
@@ -138,5 +186,188 @@ private:
 
     Singleton() {}
     static Singleton* instance_;
+};
+```
+
+## 3. C++ STLs
+
+### 3.1 unique_ptr
+
+```c++
+#include <memory>
+
+template<typename T, typename Deleter = std::default_delete<T>>
+class MyUniquePtr {
+private:
+    using element_type = T;
+    using deleter_type = Deleter;
+    using pointer = T*;
+
+    pointer ptr_;
+
+public:
+    // Constructor
+    MyUniquePtr() noexcept : ptr_(nullptr) {}
+
+    explicit MyUniquePtr(pointer p) noexcept : ptr_(p) {}
+
+    // If a class has user declared move constructor
+    // its copy constructor/assignment is deleted on default
+    MyUniquePtr(MyUniquePtr&& u) noexcept {
+        ptr_ = u.release();
+    }
+
+    // make Derived class can be automatically converted to Base class
+    template<typename U, typename E>
+    MyUniquePtr(MyUniquePtr<U, E>&& u) noexcept {
+        ptr_ = u.release();
+    }
+
+    // Destructor
+    ~MyUniquePtr() noexcept {
+        delete ptr_;
+    }
+
+    // Operators
+    MyUniquePtr& operator= (MyUniquePtr&& rhs) noexcept {
+        ptr_ = rhs.release();
+    }
+
+    T& operator*() const noexcept { return *ptr_; }
+    T* operator->() const noexcept { return ptr_; }
+
+    // Modifiers
+    pointer release() noexcept {
+        pointer ptr = ptr_;
+        ptr_ = nullptr;
+        return ptr;
+    }
+
+    void reset(pointer ptr = pointer()) noexcept {
+        if (ptr_) delete ptr_;
+        ptr_ = ptr;
+    }
+
+    void swap(MyUniquePtr& other) noexcept {
+        using std::swap;
+        swap(this->ptr_, other.ptr_);
+    }
+
+    // Observers
+    pointer get() const noexcept { return ptr_; }
+    explicit operator bool() const noexcept { return ptr_; }
+};
+```
+
+### 3.2 shared_ptr
+
+```c++
+template<typename T, typename Deleter = std::default_delete<T>>
+class MySharedPtr {
+private:
+    struct SharedCount {
+        SharedCount(): count_(1) {}
+        void AddCount() { ++count_; }
+        long ReduceCount() { return --count_; }
+        long GetCount() const { return count_; }
+
+    private:
+        long count_;
+    };
+
+    using element_type = T;
+    using deleter_type = Deleter;
+    using pointer = T*;
+
+    pointer ptr_;
+    SharedCount* shared_count_;
+
+public:
+    template <typename U, typename E>
+    friend class MySharedPtr;
+
+    // Default Constructor
+    MySharedPtr() noexcept : ptr_(nullptr) {}
+    // Constructor
+    explicit MySharedPtr(pointer p) noexcept : ptr_(p) {
+        if (ptr_) {
+            shared_count_ = new SharedCount();
+        }
+    }
+    // Copy Constructor
+    MySharedPtr(MySharedPtr& u) noexcept {
+        ptr_ = u.ptr_;
+        if (ptr_) {
+            u.shared_count_->AddCount();    // increase counter
+            shared_count_ = u.shared_count_;// copy counter
+        }
+    }
+    // Move Constructor
+    MySharedPtr(MySharedPtr&& u) noexcept {
+        ptr_ = u.ptr_;
+        if (ptr_) {
+            shared_count_ = u.shared_count_;
+            u.ptr_ = nullptr;
+        }
+    }
+    // Template Copy Constructor
+    template<typename U, typename E>
+    MySharedPtr(MySharedPtr<U, E>& u) noexcept {
+        ptr_ = u.ptr_;
+        if (ptr_) {
+            u.shared_count_->AddCount();
+            shared_count_ = u.shared_count_();
+        }
+    }
+    // make Derived class can be automatically converted to Base class
+    template<typename U, typename E>
+    MySharedPtr(MySharedPtr<U, E>&& u) noexcept {
+        ptr_ = u.ptr_;
+        if (ptr_) {
+            shared_count_ = u.shared_count_;
+            u.ptr_ = nullptr;
+        }
+    }
+
+    // Destructor
+    ~MySharedPtr() noexcept {
+        if (ptr_ && !shared_count_->ReduceCount()) {
+            delete ptr_;
+            delete shared_count_;
+        }
+    }
+
+    // Operators
+    MySharedPtr& operator= (MySharedPtr u) noexcept {
+        u.swap(*this);
+        return *this;
+    }
+
+    T& operator*() const noexcept { return *ptr_; }
+    T* operator->() const noexcept { return ptr_; }
+
+    // Modifiers
+    long use_count() const {
+        if (ptr_) {
+            return shared_count_->GetCount();
+        } else {
+            return 0;
+        }
+    }
+
+    void reset(pointer ptr = pointer()) noexcept {
+        if (ptr_) delete ptr_;
+        ptr_ = ptr;
+    }
+
+    void swap(MySharedPtr& other) noexcept {
+        using std::swap;
+        swap(ptr_, other.ptr_);
+        swap(shared_count_, other.shared_count_);
+    }
+
+    // Observers
+    pointer get() const noexcept { return ptr_; }
+    explicit operator bool() const noexcept { return ptr_; }
 };
 ```
