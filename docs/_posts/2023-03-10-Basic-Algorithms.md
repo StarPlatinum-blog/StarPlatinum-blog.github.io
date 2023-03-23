@@ -105,6 +105,8 @@ void HeapSort(vector<int>& vec) {
 
 #### 1.2.1 Binary Search
 
+Leetcode problem: https://leetcode.cn/problems/N6YdxV/
+
 ```c++
 int binarySearch(vector<int> arr, int x) {
     int left = 0;

@@ -138,6 +138,46 @@ public:
 };
 ```
 
+### 1.3 Print 1-N with Multi-thread
+
+```c++
+#include <iostream>
+#include <vector>
+#include <mutex>
+#include <thread>
+#include <chrono>
+
+using namespace std::chrono_literals;
+
+constexpr const int kValMax = 1'000;
+
+void PrintVal() {
+    static int val_ = 0;
+    static std::mutex mut;
+    while (val_ < kValMax) {
+        {
+            std::lock_guard<std::mutex> lock(mut);
+            if (val_ >= kValMax) break;
+            std::cout << val_++ << " ";
+        }
+        std::cout.flush();
+        std::this_thread::sleep_for(10ms);
+    }
+}
+
+int main() {
+    std::vector<std::thread> th_vec;
+    int cores = std::thread::hardware_concurrency();
+    for (int i = 0; i < cores; ++i) {
+        th_vec.emplace_back(PrintVal);
+    }
+    for (int i = 0; i < cores; ++i) {
+        th_vec[i].join();
+    }
+    return 0;
+}
+```
+
 ## 2. Design Patterns
 
 ### 2.1 Singleton
