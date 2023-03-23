@@ -178,6 +178,37 @@ int main() {
 }
 ```
 
+### 1.4 Deadlock
+
+```c++
+#include <thread>
+#include <mutex>
+
+static std::mutex mut1, mut2;
+
+void DeadLocker1() {
+    std::unique_lock<std::mutex> lock1(mut1);
+    std::unique_lock<std::mutex> lock2(mut2);
+    lock2.unlock();
+    lock1.unlock();
+}
+
+void DeadLocker2() {
+    std::unique_lock<std::mutex> lock2(mut2);
+    std::unique_lock<std::mutex> lock1(mut1);
+    lock1.unlock();
+    lock2.unlock();
+}
+
+int main() {
+    std::thread t1(DeadLocker1);
+    std::thread t2(DeadLocker2);
+    t1.join();
+    t2.join();
+    return 0;
+}
+```
+
 ## 2. Design Patterns
 
 ### 2.1 Singleton
