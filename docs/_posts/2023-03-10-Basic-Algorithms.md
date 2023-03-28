@@ -145,8 +145,20 @@ auto vectorHash = [fn = hash<int>{}] (const vector<int>& arr) -> size_t {
         });
 };
 
+struct vectorHashT {
+    size_t operator() (const vector<int>& arr) {
+        auto fn = hash<int>{};
+        return accumulate(
+            arr.begin(), arr.end(), 0u, [&] (size_t acc, int x) {
+                return (acc << 1) ^ fn(x);
+            }
+        );
+    }
+};
+
 // Use in unordered container:
 unordered_map<vector<int>, int, decltype(vectorHash)> mp(0, vectorHash);
+unordered_map<vector<int>, int, vectorHashT)> mp(0, vectorHashT{});
 unordered_set<array<int, 26>, decltype(arrayHash)> st(0, arrayHash);
 ```
 
