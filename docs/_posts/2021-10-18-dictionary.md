@@ -41,8 +41,8 @@ categories: notes
 | precaution          | n. 预防                                           |      |
 | occlude             | v. 遮挡                                           |      |
 | prescribe           | v. 规定                                           |      |
-|                     |                                                   |      |
-|                     |                                                   |      |
+| bibliography        | n. 参考文献                                       |      |
+| jargon              | n. 行话                                           |      |
 |                     |                                                   |      |
 |                     |                                                   |      |
 |                     |                                                   |      |
